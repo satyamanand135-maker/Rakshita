@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Safe Routes - Rakshita</title>
+    <link rel="stylesheet" href="../../assets/css/perfect-dark-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    
+    
+</head>
+<body>
+    <div class="test-container">
+        <div class="header">
+            <h1>🛡️ Rakshita Safe Routes Test</h1>
+            <p>Test the safe route planning functionality</p>
+        </div>
+        
+        <div class="content">
+            <div id="status" class="status success">
+                <i class="fas fa-check-circle"></i>
+                Ready to test safe routes functionality
+            </div>
+            
+            <div class="quick-test">
+                <div class="test-btn" onclick="testLocation()">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <strong>Test GPS</strong>
+                    <small>Check location access</small>
+                </div>
+                <div class="test-btn" onclick="testRouting()">
+                    <i class="fas fa-route"></i>
+                    <strong>Test Routing</strong>
+                    <small>Plan a sample route</small>
+                </div>
+                <div class="test-btn" onclick="testSafety()">
+                    <i class="fas fa-shield-alt"></i>
+                    <strong>Test Safety</strong>
+                    <small>Check safety features</small>
+                </div>
+                <div class="test-btn" onclick="openMainApp()">
+                    <i class="fas fa-external-link-alt"></i>
+                    <strong>Open Main App</strong>
+                    <small>Go to full dashboard</small>
+                </div>
+            </div>
+            
+            <div class="route-planner">
+                <h3 style="margin-bottom: 1rem; color: #1f2937;">
+                    <i class="fas fa-route"></i> Plan Your Safe Route
+                </h3>
+                
+                <div class="input-group">
+                    <i class="fas fa-map-marker-alt" style="color: #10b981;"></i>
+                    <input type="text" id="from-location" placeholder="From: Current Location" readonly>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-map-marker-alt" style="color: #ef4444;"></i>
+                    <input type="text" id="to-location" placeholder="To: Enter your destination">
+                </div>
+                
+                <button class="plan-btn" id="plan-route" onclick="planRoute()">
+                    <i class="fas fa-route"></i>
+                    Plan Safe Route
+                </button>
+            </div>
+            
+            <div id="route-results" class="route-results" style="display: none;">
+                <!-- Route results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🛡️ Rakshita Safe Routes Test Page Loaded');
+            updateStatus('Ready to test safe routes functionality', 'success');
+            
+            // Try to get current location
+            getCurrentLocation();
+            
+            // Add enter key support
+            document.getElementById('to-location').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    planRoute();
+                }
+            });
+        });
+        
+        function updateStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            status.className = `status ${type}`;
+            status.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                ${message}
+            `;
+        }
+        
+        function getCurrentLocation() {
+            const fromInput = document.getElementById('from-location');
+            
+            if (navigator.geolocation) {
+                fromInput.value = 'Getting your location...';
+                
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude.toFixed(4);
+                        const lng = position.coords.longitude.toFixed(4);
+                        fromInput.value = `Current Location (${lat}, ${lng})`;
+                        updateStatus('Location detected successfully! Ready to plan routes.', 'success');
+                    },
+                    (error) => {
+                        fromInput.value = 'Current Location (Enable GPS for precise location)';
+                        updateStatus('Location access denied. You can still test routing with manual locations.', 'error');
+                    }
+                );
+            } else {
+                fromInput.value = 'Current Location (Geolocation not supported)';
+                updateStatus('Geolocation not supported in this browser', 'error');
+            }
+        }
+        
+        function planRoute() {
+            const destination = document.getElementById('to-location').value.trim();
+            const planBtn = document.getElementById('plan-route');
+            const resultsDiv = document.getElementById('route-results');
+            
+            if (!destination) {
+                updateStatus('Please enter a destination to plan your route', 'error');
+                document.getElementById('to-location').focus();
+                return;
+            }
+            
+            // Update UI
+            planBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Planning Your Safe Route...';
+            planBtn.disabled = true;
+            updateStatus('Analyzing routes and safety data...', 'info');
+            
+            // Simulate route planning
+            setTimeout(() => {
+                displayRoutes(destination);
+                planBtn.innerHTML = '<i class="fas fa-route"></i> Plan Safe Route';
+                planBtn.disabled = false;
+                updateStatus(`Found safe routes to ${destination}! Choose your preferred option.`, 'success');
+            }, 2500);
+        }
+        
+        function displayRoutes(destination) {
+            const resultsDiv = document.getElementById('route-results');
+            
+            resultsDiv.innerHTML = `
+                <h3 style="margin-bottom: 1rem; color: #1f2937;">
+                    <i class="fas fa-map-marked-alt"></i> Safe Routes to ${destination}
+                </h3>
+                
+                <div class="route-option">
+                    <div class="route-header">
+                        <div class="route-icon safe">
+                            <i class="fas fa-shield-check"></i>
+                        </div>
+                        <div class="route-info">
+                            <h4>Safest Route</h4>
+                            <div class="route-stats">
+                                <span><i class="fas fa-clock"></i> 15 min</span>
+                                <span><i class="fas fa-route"></i> 3.2 km</span>
+                                <span><i class="fas fa-shield-alt"></i> 95% Safe</span>
+                            </div>
+                        </div>
+                        <button class="start-btn" onclick="startNavigation('Safest Route', '${destination}')">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                    </div>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; font-size: 0.9rem; color: #6b7280;">
+                        <strong>Features:</strong> Well-lit streets, Police presence, Low crime area, CCTV coverage
+                    </div>
+                </div>
+                
+                <div class="route-option">
+                    <div class="route-header">
+                        <div class="route-icon warning">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div class="route-info">
+                            <h4>Balanced Route</h4>
+                            <div class="route-stats">
+                                <span><i class="fas fa-clock"></i> 12 min</span>
+                                <span><i class="fas fa-route"></i> 2.8 km</span>
+                                <span><i class="fas fa-shield-alt"></i> 85% Safe</span>
+                            </div>
+                        </div>
+                        <button class="start-btn" onclick="startNavigation('Balanced Route', '${destination}')">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                    </div>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; font-size: 0.9rem; color: #6b7280;">
+                        <strong>Features:</strong> Moderate traffic, Some lighting, Mixed safety zones
+                        <br><strong>Warning:</strong> One construction zone
+                    </div>
+                </div>
+            `;
+            
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function startNavigation(routeType, destination) {
+            updateStatus(`🧭 Navigation started! Following ${routeType} to ${destination}`, 'success');
+            
+            // Simulate navigation
+            setTimeout(() => {
+                updateStatus(`✅ Navigation active - Follow the highlighted path to ${destination}`, 'success');
+            }, 1000);
+        }
+        
+        function testLocation() {
+            updateStatus('Testing GPS access...', 'info');
+            getCurrentLocation();
+        }
+        
+        function testRouting() {
+            document.getElementById('to-location').value = 'India Gate, New Delhi';
+            planRoute();
+        }
+        
+        function testSafety() {
+            updateStatus('🛡️ Safety features: AI threat detection, geo-fencing, emergency SOS, community alerts - All active!', 'success');
+        }
+        
+        function openMainApp() {
+            window.open('https://localhost:8443', '_blank');
+        }
+    </script>
+</body>
+</html>

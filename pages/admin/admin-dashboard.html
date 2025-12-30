@@ -1,0 +1,2422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Security Dashboard - Rakshita</title>
+    <link rel="stylesheet" href="../../assets/css/perfect-dark-theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+            color: #ffffff !important; 
+            background: linear-gradient(145deg, #1a1a2e 0%, #2d1b69 50%, #16213e 100%) !important;
+        }
+        .nav-item { 
+            color: #ffffff !important; 
+            border-left: 3px solid rgba(255, 20, 147, 0.3) !important;
+        }
+        .nav-item:hover, .nav-item.active { 
+            background: linear-gradient(90deg, rgba(255, 20, 147, 0.2) 0%, rgba(0, 212, 255, 0.2) 100%) !important;
+            border-left-color: #ff1493 !important;
+        }
+        .stat-card { 
+            background: linear-gradient(145deg, #1a1a2e 0%, #2d1b69 30%, #16213e 100%) !important;
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.2) !important;
+        }
+        .btn, button { 
+            color: #ffffff !important; 
+            background: linear-gradient(135deg, #00d4ff 0%, #ff1493 50%, #ff6b6b 100%) !important; 
+            box-shadow: 0 0 15px rgba(255, 20, 147, 0.4) !important;
+            border: none !important;
+        }
+        input, select, textarea { 
+            background: #ffffff !important; 
+            color: #000000 !important; 
+            font-weight: 700 !important; 
+            border: 2px solid #ff1493 !important;
+        }
+        .chart-container, .locations-panel, .recent-cases { 
+            background: #ffffff !important; 
+            color: #000000 !important; 
+        }
+        .case-item, .location-item { 
+            color: #000000 !important; 
+            font-weight: 600 !important;
+        }
+        table, th, td { 
+            color: #ffffff !important; 
+            background: linear-gradient(145deg, #1a1a2e 0%, #2d1b69 50%, #16213e 100%) !important; 
+        }
+        i, .icon { 
+            color: #ff1493 !important; 
+            text-shadow: 0 0 5px rgba(255, 20, 147, 0.5) !important; 
+        }
+    </style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(-20px) translateY(-10px); }
+            50% { transform: translateX(20px) translateY(10px); }
+            75% { transform: translateX(-10px) translateY(20px); }
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(145deg, #1e1e3f 0%, #2d2d5f 100%);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+        
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.02) 50%, transparent 70%);
+            animation: sidebarShimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes sidebarShimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+        
+        .sidebar-header {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff00ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes textGlow {
+            from { filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(255, 0, 255, 0.5)); }
+        }
+        
+        .sidebar-header p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        
+        .sidebar-nav {
+            padding: 2rem 0;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .nav-item:hover::before {
+            left: 100%;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.1) 0%, rgba(255, 0, 255, 0.1) 100%);
+            border-left-color: #00d4ff;
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.2) 0%, rgba(255, 0, 255, 0.2) 100%);
+            border-left-color: #ff00ff;
+        }
+        
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover i {
+            transform: scale(1.2) rotate(5deg);
+            color: #00d4ff;
+        }
+        
+        .nav-item.active i {
+            color: #ff00ff;
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            background: rgba(15, 15, 35, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(145deg, rgba(30, 30, 63, 0.8) 0%, rgba(45, 45, 95, 0.8) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            animation: headerRotate 10s linear infinite;
+        }
+        
+        @keyframes headerRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header-title h1 {
+            color: #e2e8f0;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff00ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .header-title p {
+            color: #94a3b8;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff 0%, #ff00ff 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(148, 163, 184, 0.2) 0%, rgba(71, 85, 105, 0.2) 100%);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 15px 35px rgba(148, 163, 184, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(145deg, rgba(30, 30, 63, 0.8) 0%, rgba(45, 45, 95, 0.8) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 212, 255, 0.05) 50%, transparent 70%);
+            animation: cardShimmer 4s ease-in-out infinite;
+        }
+        
+        @keyframes cardShimmer {
+            0%, 100% { transform: translateX(-100%) translateY(-100%); }
+            50% { transform: translateX(100%) translateY(100%); }
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 30px 60px rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: iconGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes iconGlow {
+            0%, 100% { transform: translateX(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .stat-icon.cases {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+        
+        .stat-icon.resolved {
+            background: linear-gradient(135deg, #00d2d3 0%, #54a0ff 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 210, 211, 0.3);
+        }
+        
+        .stat-icon.pending {
+            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(254, 202, 87, 0.3);
+        }
+        
+        .stat-icon.locations {
+            background: linear-gradient(135deg, #5f27cd 0%, #00d4ff 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(95, 39, 205, 0.3);
+        }
+        
+        .stat-value {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #e2e8f0;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+            animation: numberCount 2s ease-out;
+        }
+        
+        @keyframes numberCount {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stat-change {
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stat-change.positive {
+            background: linear-gradient(135deg, rgba(0, 210, 211, 0.2) 0%, rgba(84, 160, 255, 0.2) 100%);
+            color: #00d2d3;
+            border: 1px solid rgba(0, 210, 211, 0.3);
+        }
+        
+        .stat-change.negative {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(238, 90, 36, 0.2) 100%);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            height: 400px; /* Fixed height for proper chart sizing */
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px; /* Specific height for chart canvas */
+            width: 100%;
+        }
+        
+        #trendsChart {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .chart-filters {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        .locations-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .location-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .location-item:hover {
+            background: #f8fafc;
+        }
+        
+        .location-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .location-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .location-status.high {
+            background: #ef4444;
+        }
+        
+        .location-status.medium {
+            background: #f59e0b;
+        }
+        
+        .location-status.low {
+            background: #10b981;
+        }
+        
+        .location-name {
+            font-weight: 500;
+            color: #1f2937;
+        }
+        
+        .location-cases {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        
+        .case-count {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .recent-cases {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .case-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .case-item:last-child {
+            border-bottom: none;
+        }
+        
+        .case-info {
+            flex: 1;
+        }
+        
+        .case-id {
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+        
+        .case-location {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+        
+        .case-time {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+        
+        .case-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .case-status.emergency {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        .case-status.resolved {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .case-status.investigating {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-top {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+        
+        /* Additional styles for new sections */
+        .dashboard-section {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .search-filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-input, .filter-select, .setting-select {
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus, .filter-select:focus, .setting-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .cases-table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .cases-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .cases-table th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .cases-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .cases-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        .location-analytics {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .map-container, .location-stats {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .map-placeholder {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border-radius: 8px;
+            color: #6b7280;
+        }
+        
+        .map-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .location-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .metric-card {
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .metric-card h4 {
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-card p {
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        
+        .risk-level {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .risk-level.high {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+        
+        .risk-level.low {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+        }
+        
+        .incident-count {
+            background: #3b82f6;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .trends-analytics {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .trend-charts {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .predictions {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .prediction-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .prediction-card {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+        }
+        
+        .prediction-card h4 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .confidence {
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .alerts-panel, .reports-panel, .settings-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .alert-controls, .report-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .alert-feed {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .settings-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .settings-category {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+        }
+        
+        .settings-category h3 {
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .setting-item label {
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        .setting-checkbox {
+            width: 20px;
+            height: 20px;
+        }
+        
+        /* Additional styles for functionality */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        .btn-small {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-small:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+        
+        .priority-high {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        
+        .priority-medium {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+        
+        .priority-low {
+            color: #10b981;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .alert-item {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+        
+        .alert-item.emergency {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+        }
+        
+        .alert-item.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: #f59e0b;
+        }
+        
+        .alert-item.info {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+        }
+        
+        .alert-time {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        
+        .alert-content strong {
+            color: #1f2937;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        
+        .report-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .report-info h4 {
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+        
+        .report-info p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .log-entry {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            padding: 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .log-time {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .log-action {
+            color: #1f2937;
+            font-weight: 500;
+        }
+        
+        .log-user {
+            color: #3b82f6;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>🛡️ Rakshita Admin</h2>
+                <p>Security Analytics Dashboard</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-item active" onclick="switchSection('overview')">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Overview</span>
+                </div>
+                <div class="nav-item" onclick="switchSection('cases')">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Security Cases</span>
+                </div>
+                <div class="nav-item" onclick="switchSection('locations')">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>Location Analysis</span>
+                </div>
+                <div class="nav-item" onclick="switchSection('trends')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Trend Analysis</span>
+                </div>
+                <div class="nav-item" onclick="switchSection('alerts')">
+                    <i class="fas fa-bell"></i>
+                    <span>Real-time Alerts</span>
+                </div>
+                <div class="nav-item" onclick="switchSection('reports')">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Reports</span>
+                </div>
+                <div class="nav-item" onclick="switchSection('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="header-top">
+                    <div class="header-title">
+                        <h1>Security Analytics Dashboard</h1>
+                        <p>Real-time monitoring and analysis of security incidents across all locations</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="exportData()">
+                            <i class="fas fa-download"></i> Export Data
+                        </button>
+                        <button class="btn btn-primary" onclick="generateReport()">
+                            <i class="fas fa-chart-bar"></i> Generate Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Overview Section (Default) -->
+            <div id="section-overview" class="dashboard-section">
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon cases">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-change negative">
+                                <i class="fas fa-arrow-up"></i> +12%
+                            </div>
+                        </div>
+                        <div class="stat-value" id="total-cases">247</div>
+                        <div class="stat-label">Total Cases (This Month)</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon resolved">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i> +8%
+                            </div>
+                        </div>
+                        <div class="stat-value" id="resolved-cases">198</div>
+                        <div class="stat-label">Resolved Cases</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon pending">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-change negative">
+                                <i class="fas fa-arrow-up"></i> +15%
+                            </div>
+                        </div>
+                        <div class="stat-value" id="pending-cases">49</div>
+                        <div class="stat-label">Pending Cases</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon locations">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-down"></i> -5%
+                            </div>
+                        </div>
+                        <div class="stat-value" id="high-risk-locations">12</div>
+                        <div class="stat-label">High-Risk Locations</div>
+                    </div>
+                </div>
+                
+                <!-- Charts and Location Panel -->
+                <div class="dashboard-grid">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Security Incidents Trend</h3>
+                            <div class="chart-filters">
+                                <button class="filter-btn active" onclick="updateChart('7d')">7 Days</button>
+                                <button class="filter-btn" onclick="updateChart('30d')">30 Days</button>
+                                <button class="filter-btn" onclick="updateChart('90d')">90 Days</button>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="trendsChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="locations-panel">
+                        <h3 class="chart-title" style="margin-bottom: 1.5rem;">Location Risk Analysis</h3>
+                        <div id="locations-list">
+                            <div class="location-item">
+                                <div class="location-info">
+                                    <div class="location-status high"></div>
+                                    <div>
+                                        <div class="location-name">Connaught Place</div>
+                                        <div class="location-cases">High tourist density area</div>
+                                    </div>
+                                </div>
+                                <div class="case-count">23 cases</div>
+                            </div>
+                            
+                            <div class="location-item">
+                                <div class="location-info">
+                                    <div class="location-status high"></div>
+                                    <div>
+                                        <div class="location-name">Chandni Chowk</div>
+                                        <div class="location-cases">Crowded market area</div>
+                                    </div>
+                                </div>
+                                <div class="case-count">19 cases</div>
+                            </div>
+                            
+                            <div class="location-item">
+                                <div class="location-info">
+                                    <div class="location-status medium"></div>
+                                    <div>
+                                        <div class="location-name">India Gate</div>
+                                        <div class="location-cases">Popular tourist spot</div>
+                                    </div>
+                                </div>
+                                <div class="case-count">15 cases</div>
+                            </div>
+                            
+                            <div class="location-item">
+                                <div class="location-info">
+                                    <div class="location-status medium"></div>
+                                    <div>
+                                        <div class="location-name">Red Fort</div>
+                                        <div class="location-cases">Historical monument</div>
+                                    </div>
+                                </div>
+                                <div class="case-count">12 cases</div>
+                            </div>
+                            
+                            <div class="location-item">
+                                <div class="location-info">
+                                    <div class="location-status low"></div>
+                                    <div>
+                                        <div class="location-name">Lotus Temple</div>
+                                        <div class="location-cases">Peaceful area</div>
+                                    </div>
+                                </div>
+                                <div class="case-count">8 cases</div>
+                            </div>
+                            
+                            <div class="location-item">
+                                <div class="location-info">
+                                    <div class="location-status low"></div>
+                                    <div>
+                                        <div class="location-name">Qutub Minar</div>
+                                        <div class="location-cases">Well-secured area</div>
+                                    </div>
+                                </div>
+                                <div class="case-count">6 cases</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Cases -->
+                <div class="recent-cases">
+                    <h3 class="chart-title" style="margin-bottom: 1.5rem;">Recent Security Cases</h3>
+                    <div id="recent-cases-list">
+                        <div class="case-item">
+                            <div class="case-info">
+                                <div class="case-id">CASE-2024-001247</div>
+                                <div class="case-location">📍 Connaught Place, New Delhi</div>
+                                <div class="case-time">2 minutes ago</div>
+                            </div>
+                            <div class="case-status emergency">Emergency SOS</div>
+                        </div>
+                        
+                        <div class="case-item">
+                            <div class="case-info">
+                                <div class="case-id">CASE-2024-001246</div>
+                                <div class="case-location">📍 Chandni Chowk, Delhi</div>
+                                <div class="case-time">15 minutes ago</div>
+                            </div>
+                            <div class="case-status investigating">Investigating</div>
+                        </div>
+                        
+                        <div class="case-item">
+                            <div class="case-info">
+                                <div class="case-id">CASE-2024-001245</div>
+                                <div class="case-location">📍 India Gate, New Delhi</div>
+                                <div class="case-time">1 hour ago</div>
+                            </div>
+                            <div class="case-status resolved">Resolved</div>
+                        </div>
+                        
+                        <div class="case-item">
+                            <div class="case-info">
+                                <div class="case-id">CASE-2024-001244</div>
+                                <div class="case-location">📍 Red Fort, Delhi</div>
+                                <div class="case-time">2 hours ago</div>
+                            </div>
+                            <div class="case-status resolved">Resolved</div>
+                        </div>
+                        
+                        <div class="case-item">
+                            <div class="case-info">
+                                <div class="case-id">CASE-2024-001243</div>
+                                <div class="case-location">📍 Karol Bagh, Delhi</div>
+                                <div class="case-time">3 hours ago</div>
+                            </div>
+                            <div class="case-status investigating">Investigating</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Cases Section -->
+            <div id="section-cases" class="dashboard-section" style="display: none;">
+                <div class="section-controls">
+                    <div class="search-filters">
+                        <input type="text" placeholder="Search cases..." class="search-input" onkeyup="filterCases(this.value)">
+                        <select class="filter-select" onchange="filterByStatus(this.value)">
+                            <option value="">All Status</option>
+                            <option value="emergency">Emergency</option>
+                            <option value="investigating">Investigating</option>
+                            <option value="resolved">Resolved</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="createNewCase()">
+                            <i class="fas fa-plus"></i> New Case
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="cases-table-container">
+                    <table class="cases-table">
+                        <thead>
+                            <tr>
+                                <th>Case ID</th>
+                                <th>Location</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                                <th>Assigned To</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cases-table-body">
+                            <!-- Cases will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Location Analysis Section -->
+            <div id="section-locations" class="dashboard-section" style="display: none;">
+                <div class="location-analytics">
+                    <div class="map-container">
+                        <h3>Interactive Risk Map</h3>
+                        <div class="map-placeholder">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <p>Interactive map showing risk levels across different locations</p>
+                            <button class="btn btn-primary" onclick="loadMap()">Load Interactive Map</button>
+                        </div>
+                    </div>
+                    
+                    <div class="location-stats">
+                        <h3>Location Statistics</h3>
+                        <div class="location-metrics">
+                            <div class="metric-card">
+                                <h4>Highest Risk Area</h4>
+                                <p>Connaught Place</p>
+                                <span class="risk-level high">High Risk</span>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Most Incidents</h4>
+                                <p>Chandni Chowk</p>
+                                <span class="incident-count">23 cases</span>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Safest Area</h4>
+                                <p>Qutub Minar</p>
+                                <span class="risk-level low">Low Risk</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trends Section -->
+            <div id="section-trends" class="dashboard-section" style="display: none;">
+                <div class="trends-analytics">
+                    <div class="trend-charts">
+                        <div class="chart-container">
+                            <h3>Monthly Trend Analysis</h3>
+                            <canvas id="monthlyTrendChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Incident Type Distribution</h3>
+                            <canvas id="incidentTypeChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="predictions">
+                        <h3>AI Predictions</h3>
+                        <div class="prediction-cards">
+                            <div class="prediction-card">
+                                <h4>Next Week Forecast</h4>
+                                <p>Expected 15% increase in incidents</p>
+                                <span class="confidence">85% confidence</span>
+                            </div>
+                            <div class="prediction-card">
+                                <h4>High Risk Period</h4>
+                                <p>Weekend evenings (6-10 PM)</p>
+                                <span class="confidence">92% confidence</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts Section -->
+            <div id="section-alerts" class="dashboard-section" style="display: none;">
+                <div class="alerts-panel">
+                    <div class="alert-controls">
+                        <button class="btn btn-primary" onclick="createAlert()">
+                            <i class="fas fa-bell"></i> Create Alert
+                        </button>
+                        <button class="btn btn-secondary" onclick="testAlert()">
+                            <i class="fas fa-test-tube"></i> Test Alert System
+                        </button>
+                    </div>
+                    
+                    <div class="live-alerts" id="live-alerts">
+                        <h3>Live Alert Feed</h3>
+                        <div class="alert-feed">
+                            <!-- Live alerts will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div id="section-reports" class="dashboard-section" style="display: none;">
+                <div class="reports-panel">
+                    <div class="report-generator">
+                        <h3>Generate Reports</h3>
+                        <div class="report-options">
+                            <button class="btn btn-primary" onclick="generateDailyReport()">
+                                <i class="fas fa-calendar-day"></i> Daily Report
+                            </button>
+                            <button class="btn btn-primary" onclick="generateWeeklyReport()">
+                                <i class="fas fa-calendar-week"></i> Weekly Report
+                            </button>
+                            <button class="btn btn-primary" onclick="generateMonthlyReport()">
+                                <i class="fas fa-calendar-alt"></i> Monthly Report
+                            </button>
+                            <button class="btn btn-primary" onclick="generateCustomReport()">
+                                <i class="fas fa-cog"></i> Custom Report
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-reports">
+                        <h3>Recent Reports</h3>
+                        <div class="reports-list" id="reports-list">
+                            <!-- Recent reports will be listed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="section-settings" class="dashboard-section" style="display: none;">
+                <div class="settings-panel">
+                    <div class="settings-categories">
+                        <div class="settings-category">
+                            <h3>System Configuration</h3>
+                            <div class="setting-item">
+                                <label>Alert Frequency</label>
+                                <select class="setting-select">
+                                    <option>Real-time</option>
+                                    <option>Every 5 minutes</option>
+                                    <option>Every 15 minutes</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label>Data Retention Period</label>
+                                <select class="setting-select">
+                                    <option>30 days</option>
+                                    <option>90 days</option>
+                                    <option>1 year</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-category">
+                            <h3>User Management</h3>
+                            <button class="btn btn-primary" onclick="manageUsers()">
+                                <i class="fas fa-users"></i> Manage Admin Users
+                            </button>
+                            <button class="btn btn-secondary" onclick="viewAuditLog()">
+                                <i class="fas fa-history"></i> View Audit Log
+                            </button>
+                        </div>
+                        
+                        <div class="settings-category">
+                            <h3>Security Settings</h3>
+                            <div class="setting-item">
+                                <label>Session Timeout</label>
+                                <select class="setting-select">
+                                    <option>1 hour</option>
+                                    <option selected>2 hours</option>
+                                    <option>4 hours</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label>Two-Factor Authentication</label>
+                                <input type="checkbox" class="setting-checkbox"> Enable 2FA
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Authentication check
+        function checkAuthentication() {
+            const sessionData = localStorage.getItem('rakshita_admin_session');
+            if (!sessionData) {
+                window.location.href = 'admin-auth.html';
+                return false;
+            }
+            
+            const session = JSON.parse(sessionData);
+            if (session.expiresAt <= Date.now()) {
+                localStorage.removeItem('rakshita_admin_session');
+                alert('Session expired. Please login again.');
+                window.location.href = 'admin-auth.html';
+                return false;
+            }
+            
+            // Update last activity
+            session.lastActivity = Date.now();
+            localStorage.setItem('rakshita_admin_session', JSON.stringify(session));
+            
+            // Display admin info
+            displayAdminInfo(session);
+            return true;
+        }
+        
+        function displayAdminInfo(session) {
+            const headerTitle = document.querySelector('.header-title');
+            const adminInfo = document.createElement('div');
+            adminInfo.style.cssText = 'font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;';
+            adminInfo.innerHTML = `
+                <i class="fas fa-user-shield"></i> 
+                Logged in as: <strong>${session.adminId}</strong> | 
+                Session: ${new Date(session.loginTime).toLocaleTimeString()}
+                <button onclick="logout()" style="margin-left: 1rem; padding: 0.25rem 0.75rem; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            `;
+            headerTitle.appendChild(adminInfo);
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('rakshita_admin_session');
+                window.location.href = 'admin-auth.html';
+            }
+        }
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication first
+            if (!checkAuthentication()) {
+                return;
+            }
+            
+            initializeCharts();
+            startRealTimeUpdates();
+            startSessionMonitoring();
+            console.log('🛡️ Admin Security Dashboard Loaded');
+        });
+        
+        // Chart initialization
+        function initializeCharts() {
+            const ctx = document.getElementById('trendsChart').getContext('2d');
+            
+            window.trendsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Security Cases',
+                        data: [12, 19, 15, 25, 22, 18, 24],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointHoverRadius: 8
+                    }, {
+                        label: 'Resolved Cases',
+                        data: [8, 15, 12, 20, 18, 15, 20],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleColor: 'white',
+                            bodyColor: 'white',
+                            borderColor: '#3b82f6',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 11
+                                },
+                                color: '#6b7280'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 11
+                                },
+                                color: '#6b7280'
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+        
+        // Update chart based on time period
+        function updateChart(period) {
+            // Remove active class from all filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            let newData, newLabels;
+            
+            switch(period) {
+                case '7d':
+                    newLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    newData = [12, 19, 15, 25, 22, 18, 24];
+                    break;
+                case '30d':
+                    newLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                    newData = [45, 52, 38, 61];
+                    break;
+                case '90d':
+                    newLabels = ['Month 1', 'Month 2', 'Month 3'];
+                    newData = [156, 189, 142];
+                    break;
+            }
+            
+            window.trendsChart.data.labels = newLabels;
+            window.trendsChart.data.datasets[0].data = newData;
+            window.trendsChart.data.datasets[1].data = newData.map(val => Math.floor(val * 0.8));
+            window.trendsChart.update();
+        }
+        
+        // Real-time updates simulation
+        function startRealTimeUpdates() {
+            setInterval(() => {
+                updateStats();
+                updateRecentCases();
+            }, 30000); // Update every 30 seconds
+        }
+        
+        function updateStats() {
+            // Simulate real-time stat updates
+            const totalCases = document.getElementById('total-cases');
+            const resolvedCases = document.getElementById('resolved-cases');
+            const pendingCases = document.getElementById('pending-cases');
+            const highRiskLocations = document.getElementById('high-risk-locations');
+            
+            // Random small increments
+            if (Math.random() > 0.7) {
+                totalCases.textContent = parseInt(totalCases.textContent) + 1;
+                if (Math.random() > 0.5) {
+                    resolvedCases.textContent = parseInt(resolvedCases.textContent) + 1;
+                } else {
+                    pendingCases.textContent = parseInt(pendingCases.textContent) + 1;
+                }
+            }
+        }
+        
+        function updateRecentCases() {
+            // Simulate new case arrival
+            if (Math.random() > 0.8) {
+                const casesList = document.getElementById('recent-cases-list');
+                const newCaseId = 'CASE-2024-' + String(Math.floor(Math.random() * 999999)).padStart(6, '0');
+                const locations = ['Connaught Place', 'Chandni Chowk', 'India Gate', 'Red Fort', 'Karol Bagh'];
+                const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+                
+                const newCase = document.createElement('div');
+                newCase.className = 'case-item';
+                newCase.style.background = '#fef3c7';
+                newCase.innerHTML = `
+                    <div class="case-info">
+                        <div class="case-id">${newCaseId}</div>
+                        <div class="case-location">📍 ${randomLocation}, Delhi</div>
+                        <div class="case-time">Just now</div>
+                    </div>
+                    <div class="case-status emergency">New Alert</div>
+                `;
+                
+                casesList.insertBefore(newCase, casesList.firstChild);
+                
+                // Remove last item if more than 5 cases
+                if (casesList.children.length > 5) {
+                    casesList.removeChild(casesList.lastChild);
+                }
+                
+                // Reset background after 3 seconds
+                setTimeout(() => {
+                    newCase.style.background = '';
+                }, 3000);
+            }
+        }
+        
+        // Navigation functions
+        function switchSection(section) {
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            // Add active class to clicked item
+            event.target.classList.add('active');
+            
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section').forEach(sec => sec.style.display = 'none');
+            
+            // Show selected section
+            const targetSection = document.getElementById(`section-${section}`);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
+            
+            // Update header title based on section
+            updateHeaderTitle(section);
+            
+            // Load section-specific data
+            loadSectionData(section);
+            
+            console.log(`🔄 Switched to ${section} section`);
+        }
+        
+        function updateHeaderTitle(section) {
+            const headerTitle = document.querySelector('.header-title h1');
+            const headerDesc = document.querySelector('.header-title p');
+            
+            const sectionTitles = {
+                'overview': {
+                    title: 'Security Analytics Dashboard',
+                    desc: 'Real-time monitoring and analysis of security incidents across all locations'
+                },
+                'cases': {
+                    title: 'Security Cases Management',
+                    desc: 'Detailed view and management of all security incidents and investigations'
+                },
+                'locations': {
+                    title: 'Location Risk Analysis',
+                    desc: 'Geographic analysis and risk assessment of monitored locations'
+                },
+                'trends': {
+                    title: 'Trend Analysis & Predictions',
+                    desc: 'Historical data analysis and predictive security modeling'
+                },
+                'alerts': {
+                    title: 'Real-time Alert System',
+                    desc: 'Live monitoring and instant notifications for security incidents'
+                },
+                'reports': {
+                    title: 'Reports & Documentation',
+                    desc: 'Comprehensive reporting and data export capabilities'
+                },
+                'settings': {
+                    title: 'System Settings & Configuration',
+                    desc: 'Administrative settings and system configuration options'
+                }
+            };
+            
+            if (sectionTitles[section]) {
+                headerTitle.textContent = sectionTitles[section].title;
+                headerDesc.textContent = sectionTitles[section].desc;
+            }
+        }
+        
+        function loadSectionData(section) {
+            switch(section) {
+                case 'cases':
+                    loadCasesData();
+                    break;
+                case 'trends':
+                    loadTrendCharts();
+                    break;
+                case 'alerts':
+                    loadLiveAlerts();
+                    break;
+                case 'reports':
+                    loadRecentReports();
+                    break;
+            }
+        }
+        
+        // Action functions
+        function exportData() {
+            showNotification('📊 Exporting security data...', 'info');
+            
+            // Simulate data export
+            setTimeout(() => {
+                const csvData = generateCSVData();
+                downloadCSV(csvData, 'rakshita-security-data.csv');
+                showNotification('✅ Data exported successfully!', 'success');
+            }, 2000);
+        }
+        
+        function generateReport() {
+            showNotification('📈 Generating comprehensive security report...', 'info');
+            
+            setTimeout(() => {
+                const reportData = {
+                    totalCases: document.getElementById('total-cases').textContent,
+                    resolvedCases: document.getElementById('resolved-cases').textContent,
+                    pendingCases: document.getElementById('pending-cases').textContent,
+                    highRiskLocations: document.getElementById('high-risk-locations').textContent,
+                    generatedAt: new Date().toISOString(),
+                    period: 'Current Month'
+                };
+                
+                generatePDFReport(reportData);
+                showNotification('✅ Report generated successfully!', 'success');
+            }, 3000);
+        }
+        
+        // Cases Management Functions
+        function loadCasesData() {
+            const casesData = [
+                { id: 'CASE-2024-001247', location: 'Connaught Place', type: 'Emergency SOS', status: 'emergency', priority: 'High', assignedTo: 'Officer Kumar', created: '2 min ago' },
+                { id: 'CASE-2024-001246', location: 'Chandni Chowk', type: 'Suspicious Activity', status: 'investigating', priority: 'Medium', assignedTo: 'Officer Singh', created: '15 min ago' },
+                { id: 'CASE-2024-001245', location: 'India Gate', type: 'Lost Person', status: 'resolved', priority: 'Low', assignedTo: 'Officer Sharma', created: '1 hour ago' },
+                { id: 'CASE-2024-001244', location: 'Red Fort', type: 'Theft Report', status: 'resolved', priority: 'Medium', assignedTo: 'Officer Patel', created: '2 hours ago' },
+                { id: 'CASE-2024-001243', location: 'Karol Bagh', type: 'Harassment', status: 'investigating', priority: 'High', assignedTo: 'Officer Gupta', created: '3 hours ago' }
+            ];
+            
+            const tbody = document.getElementById('cases-table-body');
+            tbody.innerHTML = casesData.map(case_ => `
+                <tr>
+                    <td><strong>${case_.id}</strong></td>
+                    <td>📍 ${case_.location}</td>
+                    <td>${case_.type}</td>
+                    <td><span class="case-status ${case_.status}">${case_.status}</span></td>
+                    <td><span class="priority-${case_.priority.toLowerCase()}">${case_.priority}</span></td>
+                    <td>${case_.assignedTo}</td>
+                    <td>${case_.created}</td>
+                    <td>
+                        <button class="btn-small" onclick="viewCase('${case_.id}')">View</button>
+                        <button class="btn-small" onclick="editCase('${case_.id}')">Edit</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function filterCases(searchTerm) {
+            const rows = document.querySelectorAll('#cases-table-body tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
+            });
+        }
+        
+        function filterByStatus(status) {
+            const rows = document.querySelectorAll('#cases-table-body tr');
+            rows.forEach(row => {
+                if (!status) {
+                    row.style.display = '';
+                } else {
+                    const statusCell = row.querySelector('.case-status');
+                    row.style.display = statusCell && statusCell.classList.contains(status) ? '' : 'none';
+                }
+            });
+        }
+        
+        function createNewCase() {
+            showModal('Create New Case', `
+                <form id="newCaseForm">
+                    <div class="form-group">
+                        <label>Case Type:</label>
+                        <select name="type" required>
+                            <option value="">Select Type</option>
+                            <option value="Emergency SOS">Emergency SOS</option>
+                            <option value="Suspicious Activity">Suspicious Activity</option>
+                            <option value="Theft Report">Theft Report</option>
+                            <option value="Harassment">Harassment</option>
+                            <option value="Lost Person">Lost Person</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Location:</label>
+                        <input type="text" name="location" placeholder="Enter location" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Priority:</label>
+                        <select name="priority" required>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description:</label>
+                        <textarea name="description" rows="3" placeholder="Case description"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Case</button>
+                </form>
+            `);
+        }
+        
+        function viewCase(caseId) {
+            showNotification(`📋 Opening case details for ${caseId}`, 'info');
+        }
+        
+        function editCase(caseId) {
+            showNotification(`✏️ Opening edit form for ${caseId}`, 'info');
+        }
+        
+        // Location Functions
+        function loadMap() {
+            showNotification('🗺️ Loading interactive risk map...', 'info');
+            setTimeout(() => {
+                showNotification('✅ Interactive map loaded successfully!', 'success');
+            }, 2000);
+        }
+        
+        // Trend Analysis Functions
+        function loadTrendCharts() {
+            // Monthly trend chart
+            const monthlyCtx = document.getElementById('monthlyTrendChart');
+            if (monthlyCtx) {
+                new Chart(monthlyCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Monthly Cases',
+                            data: [45, 52, 38, 61, 55, 47],
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+            
+            // Incident type chart
+            const typeCtx = document.getElementById('incidentTypeChart');
+            if (typeCtx) {
+                new Chart(typeCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Emergency SOS', 'Theft', 'Harassment', 'Lost Person', 'Other'],
+                        datasets: [{
+                            data: [30, 25, 20, 15, 10],
+                            backgroundColor: ['#ef4444', '#f59e0b', '#8b5cf6', '#10b981', '#6b7280']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+        }
+        
+        // Alert Functions
+        function createAlert() {
+            showModal('Create New Alert', `
+                <form id="alertForm">
+                    <div class="form-group">
+                        <label>Alert Type:</label>
+                        <select name="type" required>
+                            <option value="emergency">Emergency</option>
+                            <option value="warning">Warning</option>
+                            <option value="info">Information</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Message:</label>
+                        <textarea name="message" rows="3" placeholder="Alert message" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Target Area:</label>
+                        <input type="text" name="area" placeholder="Specific area or 'All Areas'" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Alert</button>
+                </form>
+            `);
+        }
+        
+        function testAlert() {
+            showNotification('🧪 Testing alert system...', 'info');
+            setTimeout(() => {
+                showNotification('✅ Alert system test successful!', 'success');
+                addLiveAlert('System Test', 'Alert system functionality verified', 'info');
+            }, 1500);
+        }
+        
+        function loadLiveAlerts() {
+            const alertFeed = document.querySelector('.alert-feed');
+            alertFeed.innerHTML = `
+                <div class="alert-item emergency">
+                    <div class="alert-time">2 min ago</div>
+                    <div class="alert-content">
+                        <strong>Emergency SOS Activated</strong>
+                        <p>Location: Connaught Place - Immediate response required</p>
+                    </div>
+                </div>
+                <div class="alert-item warning">
+                    <div class="alert-time">15 min ago</div>
+                    <div class="alert-content">
+                        <strong>High Risk Area Alert</strong>
+                        <p>Increased security incidents reported in Chandni Chowk area</p>
+                    </div>
+                </div>
+                <div class="alert-item info">
+                    <div class="alert-time">1 hour ago</div>
+                    <div class="alert-content">
+                        <strong>System Update</strong>
+                        <p>Security monitoring system updated successfully</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function addLiveAlert(title, message, type) {
+            const alertFeed = document.querySelector('.alert-feed');
+            const alertItem = document.createElement('div');
+            alertItem.className = `alert-item ${type}`;
+            alertItem.innerHTML = `
+                <div class="alert-time">Just now</div>
+                <div class="alert-content">
+                    <strong>${title}</strong>
+                    <p>${message}</p>
+                </div>
+            `;
+            alertFeed.insertBefore(alertItem, alertFeed.firstChild);
+        }
+        
+        // Report Functions
+        function generateDailyReport() {
+            showNotification('📅 Generating daily report...', 'info');
+            setTimeout(() => {
+                showNotification('✅ Daily report generated!', 'success');
+                addRecentReport('Daily Security Report', 'Today');
+            }, 2000);
+        }
+        
+        function generateWeeklyReport() {
+            showNotification('📊 Generating weekly report...', 'info');
+            setTimeout(() => {
+                showNotification('✅ Weekly report generated!', 'success');
+                addRecentReport('Weekly Security Analysis', 'This Week');
+            }, 2500);
+        }
+        
+        function generateMonthlyReport() {
+            showNotification('📈 Generating monthly report...', 'info');
+            setTimeout(() => {
+                showNotification('✅ Monthly report generated!', 'success');
+                addRecentReport('Monthly Security Overview', 'This Month');
+            }, 3000);
+        }
+        
+        function generateCustomReport() {
+            showModal('Custom Report Generator', `
+                <form id="customReportForm">
+                    <div class="form-group">
+                        <label>Report Type:</label>
+                        <select name="type" required>
+                            <option value="incident">Incident Analysis</option>
+                            <option value="location">Location Risk Assessment</option>
+                            <option value="trend">Trend Analysis</option>
+                            <option value="performance">Performance Metrics</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date Range:</label>
+                        <input type="date" name="startDate" required>
+                        <input type="date" name="endDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Include Sections:</label>
+                        <label><input type="checkbox" name="charts" checked> Charts & Graphs</label>
+                        <label><input type="checkbox" name="tables" checked> Data Tables</label>
+                        <label><input type="checkbox" name="recommendations"> Recommendations</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Generate Report</button>
+                </form>
+            `);
+        }
+        
+        function loadRecentReports() {
+            const reportsList = document.getElementById('reports-list');
+            reportsList.innerHTML = `
+                <div class="report-item">
+                    <div class="report-info">
+                        <h4>Daily Security Report</h4>
+                        <p>Generated: Today, 9:00 AM</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="downloadReport('daily')">Download</button>
+                </div>
+                <div class="report-item">
+                    <div class="report-info">
+                        <h4>Weekly Analysis</h4>
+                        <p>Generated: Yesterday, 6:00 PM</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="downloadReport('weekly')">Download</button>
+                </div>
+                <div class="report-item">
+                    <div class="report-info">
+                        <h4>Monthly Overview</h4>
+                        <p>Generated: 3 days ago</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="downloadReport('monthly')">Download</button>
+                </div>
+            `;
+        }
+        
+        function addRecentReport(title, period) {
+            const reportsList = document.getElementById('reports-list');
+            const reportItem = document.createElement('div');
+            reportItem.className = 'report-item';
+            reportItem.innerHTML = `
+                <div class="report-info">
+                    <h4>${title}</h4>
+                    <p>Generated: Just now</p>
+                </div>
+                <button class="btn btn-secondary" onclick="downloadReport('${title.toLowerCase()}')">Download</button>
+            `;
+            reportsList.insertBefore(reportItem, reportsList.firstChild);
+        }
+        
+        function downloadReport(type) {
+            showNotification(`📥 Downloading ${type} report...`, 'info');
+        }
+        
+        // Settings Functions
+        function manageUsers() {
+            showModal('User Management', `
+                <div class="user-management">
+                    <h4>Current Admin Users</h4>
+                    <div class="user-list">
+                        <div class="user-item">
+                            <span>ADMIN001 - Primary Administrator</span>
+                            <button class="btn btn-secondary">Edit</button>
+                        </div>
+                        <div class="user-item">
+                            <span>ADMIN002 - Security Officer</span>
+                            <button class="btn btn-secondary">Edit</button>
+                        </div>
+                        <div class="user-item">
+                            <span>SUPERADMIN - System Administrator</span>
+                            <button class="btn btn-secondary">Edit</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="addNewUser()">Add New User</button>
+                </div>
+            `);
+        }
+        
+        function viewAuditLog() {
+            showModal('Security Audit Log', `
+                <div class="audit-log">
+                    <div class="log-entry">
+                        <span class="log-time">2024-12-30 14:30:25</span>
+                        <span class="log-action">Admin Login</span>
+                        <span class="log-user">ADMIN001</span>
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-time">2024-12-30 14:25:10</span>
+                        <span class="log-action">Case Created</span>
+                        <span class="log-user">ADMIN002</span>
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-time">2024-12-30 14:20:45</span>
+                        <span class="log-action">Report Generated</span>
+                        <span class="log-user">SUPERADMIN</span>
+                    </div>
+                </div>
+            `);
+        }
+        
+        // Utility Functions
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                max-width: 300px;
+            `;
+            
+            const colors = {
+                info: '#3b82f6',
+                success: '#10b981',
+                warning: '#f59e0b',
+                error: '#ef4444'
+            };
+            
+            notification.style.background = colors[type] || colors.info;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        function showModal(title, content) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            `;
+            
+            modal.innerHTML = `
+                <div class="modal-content" style="
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    max-width: 500px;
+                    width: 90%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                ">
+                    <div class="modal-header" style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 1.5rem;
+                        border-bottom: 1px solid #e5e7eb;
+                        padding-bottom: 1rem;
+                    ">
+                        <h3>${title}</h3>
+                        <button onclick="this.closest('.modal-overlay').remove()" style="
+                            background: none;
+                            border: none;
+                            font-size: 1.5rem;
+                            cursor: pointer;
+                            color: #6b7280;
+                        ">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        ${content}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Close on outside click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+        
+        function generateCSVData() {
+            return `Case ID,Location,Type,Status,Priority,Created
+CASE-2024-001247,Connaught Place,Emergency SOS,Emergency,High,2 min ago
+CASE-2024-001246,Chandni Chowk,Suspicious Activity,Investigating,Medium,15 min ago
+CASE-2024-001245,India Gate,Lost Person,Resolved,Low,1 hour ago`;
+        }
+        
+        function downloadCSV(csvData, filename) {
+            const blob = new Blob([csvData], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        function generatePDFReport(data) {
+            // In a real implementation, you would use a PDF library like jsPDF
+            console.log('Generating PDF report with data:', data);
+        }
+        
+        // Mobile menu toggle
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+        }
+        
+        console.log('🛡️ Rakshita Admin Dashboard - Security Analytics System Ready');
+    </script>
+</body>
+</html>

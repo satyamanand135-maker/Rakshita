@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Access - Rakshita Security</title>
+    <link rel="stylesheet" href="../../assets/css/perfect-dark-theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+            background: linear-gradient(145deg, #1a1a2e 0%, #2d1b69 50%, #16213e 100%) !important;
+            box-shadow: 0 0 30px rgba(255, 20, 147, 0.2) !important;
+        }
+        input { 
+            background: #ffffff !important; 
+            color: #000000 !important; 
+            font-weight: 700 !important; 
+            border: 2px solid #ff1493 !important;
+            box-shadow: 0 0 10px rgba(255, 20, 147, 0.3) !important;
+        }
+        .auth-btn { 
+            color: #ffffff !important; 
+            background: linear-gradient(135deg, #00d4ff 0%, #ff1493 50%, #ff6b6b 100%) !important; 
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.5) !important;
+            border: none !important;
+        }
+        .security-info { 
+            background: linear-gradient(145deg, #1a1a2e 0%, #2d1b69 30%, #16213e 100%) !important; 
+            color: #ffffff !important; 
+        }
+        a { color: #00d4ff !important; text-shadow: 0 0 5px rgba(0, 212, 255, 0.5) !important; }
+        i { color: #ff1493 !important; text-shadow: 0 0 8px rgba(255, 20, 147, 0.6) !important; }
+    </style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(78, 205, 196, 0.1) 0%, transparent 50%);
+            z-index: -2;
+            animation: backgroundFloat 20s ease-in-out infinite;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.02"/><circle cx="75" cy="75" r="1" fill="%2300d4ff" opacity="0.03"/><circle cx="50" cy="10" r="0.5" fill="%23ff6b6b" opacity="0.02"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            z-index: -1;
+            animation: grain 8s linear infinite;
+        }
+        
+        @keyframes backgroundFloat {
+            0%, 100% { 
+                transform: translateX(0) translateY(0) rotate(0deg);
+                filter: hue-rotate(0deg);
+            }
+            25% { 
+                transform: translateX(-20px) translateY(-10px) rotate(1deg);
+                filter: hue-rotate(90deg);
+            }
+            50% { 
+                transform: translateX(20px) translateY(10px) rotate(-1deg);
+                filter: hue-rotate(180deg);
+            }
+            75% { 
+                transform: translateX(-10px) translateY(20px) rotate(0.5deg);
+                filter: hue-rotate(270deg);
+            }
+        }
+        
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -10%); }
+            20% { transform: translate(-15%, 5%); }
+            30% { transform: translate(7%, -25%); }
+            40% { transform: translate(-5%, 25%); }
+            50% { transform: translate(-15%, 10%); }
+            60% { transform: translate(15%, 0%); }
+            70% { transform: translate(0%, 15%); }
+            80% { transform: translate(3%, -10%); }
+            90% { transform: translate(-10%, 5%); }
+        }
+        
+        .auth-container {
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                0 0 50px rgba(0, 212, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            animation: containerFloat 6s ease-in-out infinite;
+        }
+        
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes containerFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .auth-header {
+            margin-bottom: 2rem;
+        }
+        
+        .auth-header i {
+            font-size: 4rem;
+            color: #00d4ff;
+            margin-bottom: 1rem;
+            animation: iconGlow 3s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+        }
+        
+        @keyframes iconGlow {
+            0% { 
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+            }
+            100% { 
+                transform: scale(1.1) rotate(5deg);
+                filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.8));
+            }
+        }
+        
+        .auth-header h1 {
+            color: #e2e8f0;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff6b6b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .auth-header p {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+        
+        .auth-form {
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #e2e8f0;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95);
+            color: #000000;
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 
+                0 0 0 3px rgba(0, 212, 255, 0.2),
+                0 0 20px rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .form-group input::placeholder {
+            color: #6b7280;
+            font-weight: 400;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff6b6b 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 10px 20px rgba(0, 212, 255, 0.3),
+                0 0 30px rgba(255, 107, 107, 0.2);
+        }
+        
+        .auth-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.6s ease;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 15px 30px rgba(0, 212, 255, 0.4),
+                0 0 50px rgba(255, 107, 107, 0.3);
+            animation: buttonGlow 1.5s ease-in-out infinite alternate;
+        }
+        
+        .auth-btn:hover::before {
+            left: 100%;
+        }
+        
+        @keyframes buttonGlow {
+            0% { 
+                box-shadow: 
+                    0 15px 30px rgba(0, 212, 255, 0.4),
+                    0 0 50px rgba(255, 107, 107, 0.3);
+            }
+            100% { 
+                box-shadow: 
+                    0 20px 40px rgba(0, 212, 255, 0.6),
+                    0 0 80px rgba(255, 107, 107, 0.5);
+            }
+        }
+        
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            animation: none;
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #dc2626;
+            display: none;
+        }
+        
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #059669;
+            display: none;
+        }
+        
+        .security-info {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            margin-top: 2rem;
+        }
+        
+        .security-info h3 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .security-info ul {
+            text-align: left;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .security-info li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            color: #4f46e5;
+        }
+        
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .auth-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <i class="fas fa-shield-alt"></i>
+            <h1>Admin Access</h1>
+            <p>Secure authentication required</p>
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorText"></span>
+        </div>
+        
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i>
+            <span>Authentication successful! Redirecting...</span>
+        </div>
+        
+        <form class="auth-form" id="authForm">
+            <div class="form-group">
+                <label for="adminId">Admin ID</label>
+                <input type="text" id="adminId" name="adminId" placeholder="Enter your admin ID" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="accessToken">Access Token</label>
+                <input type="password" id="accessToken" name="accessToken" placeholder="Enter your access token" required>
+            </div>
+            
+            <button type="submit" class="auth-btn" id="authBtn">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Access Dashboard</span>
+            </button>
+        </form>
+        
+        <div class="security-info">
+            <h3>
+                <i class="fas fa-info-circle"></i>
+                Security Information
+            </h3>
+            <ul>
+                <li>Only authorized personnel can access the admin dashboard</li>
+                <li>All access attempts are logged and monitored</li>
+                <li>Contact system administrator for access credentials</li>
+                <li>Session expires after 2 hours of inactivity</li>
+            </ul>
+        </div>
+        
+        <a href="../../index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Main Application
+        </a>
+    </div>
+
+    <script>
+        // Predefined admin credentials (In production, use secure backend authentication)
+        const ADMIN_CREDENTIALS = {
+            'ADMIN001': 'RKS-2024-SECURE-001',
+            'ADMIN002': 'RKS-2024-SECURE-002', 
+            'ADMIN003': 'RKS-2024-SECURE-003',
+            'SUPERADMIN': 'RKS-2024-SUPER-ADMIN'
+        };
+        
+        // Session management
+        const SESSION_DURATION = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+        
+        document.getElementById('authForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const adminId = document.getElementById('adminId').value.trim();
+            const accessToken = document.getElementById('accessToken').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const authBtn = document.getElementById('authBtn');
+            
+            // Reset messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            // Validate inputs
+            if (!adminId || !accessToken) {
+                showError('Please enter both Admin ID and Access Token');
+                return;
+            }
+            
+            // Show loading state
+            authBtn.disabled = true;
+            authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+            
+            // Simulate authentication delay
+            setTimeout(() => {
+                if (ADMIN_CREDENTIALS[adminId] && ADMIN_CREDENTIALS[adminId] === accessToken) {
+                    // Successful authentication
+                    const sessionData = {
+                        adminId: adminId,
+                        loginTime: Date.now(),
+                        expiresAt: Date.now() + SESSION_DURATION,
+                        sessionToken: generateSessionToken()
+                    };
+                    
+                    // Store session data
+                    localStorage.setItem('rakshita_admin_session', JSON.stringify(sessionData));
+                    
+                    // Show success message
+                    successMessage.style.display = 'block';
+                    
+                    // Log successful access
+                    console.log(`🛡️ Admin Access Granted: ${adminId} at ${new Date().toISOString()}`);
+                    
+                    // Redirect to admin dashboard
+                    setTimeout(() => {
+                        window.location.href = 'admin-dashboard.html';
+                    }, 1500);
+                    
+                } else {
+                    // Failed authentication
+                    showError('Invalid Admin ID or Access Token');
+                    logFailedAttempt(adminId);
+                }
+                
+                // Reset button
+                authBtn.disabled = false;
+                authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Access Dashboard';
+                
+            }, 1000);
+        });
+        
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+        
+        function generateSessionToken() {
+            return 'RKS_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        }
+        
+        function logFailedAttempt(adminId) {
+            const failedAttempts = JSON.parse(localStorage.getItem('rakshita_failed_attempts') || '[]');
+            failedAttempts.push({
+                adminId: adminId,
+                timestamp: Date.now(),
+                ip: 'localhost' // In production, get real IP
+            });
+            
+            // Keep only last 10 failed attempts
+            if (failedAttempts.length > 10) {
+                failedAttempts.splice(0, failedAttempts.length - 10);
+            }
+            
+            localStorage.setItem('rakshita_failed_attempts', JSON.stringify(failedAttempts));
+            console.warn(`🚨 Failed admin access attempt: ${adminId} at ${new Date().toISOString()}`);
+        }
+        
+        // Check if already authenticated
+        function checkExistingSession() {
+            const sessionData = localStorage.getItem('rakshita_admin_session');
+            if (sessionData) {
+                const session = JSON.parse(sessionData);
+                if (session.expiresAt > Date.now()) {
+                    // Valid session exists, redirect to dashboard
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    // Session expired, clear it
+                    localStorage.removeItem('rakshita_admin_session');
+                }
+            }
+        }
+        
+        // Check session on page load
+        checkExistingSession();
+        
+        console.log('🔐 Admin Authentication System Loaded');
+        console.log('📋 Available Admin IDs for testing: ADMIN001, ADMIN002, ADMIN003, SUPERADMIN');
+    </script>
+</body>
+</html>

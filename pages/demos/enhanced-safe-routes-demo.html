@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Safe Routes Demo - Rakshita</title>
+    <link rel="stylesheet" href="../../assets/css/perfect-dark-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    
+    
+</head>
+<body>
+    <div class="demo-container">
+        <div class="header">
+            <h1>🛡️ Enhanced Safe Routes</h1>
+            <p>Experience intelligent route planning with place name support and interactive maps</p>
+        </div>
+        
+        <div class="content">
+            <div id="status" class="status success">
+                <i class="fas fa-check-circle"></i>
+                Enhanced Safe Routes system ready! Enter place names instead of coordinates.
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Place Name Input</h3>
+                    <p>Simply enter "India Gate" or "Airport" - no need for coordinates!</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <h3>Multiple Route Options</h3>
+                    <p>Get safest, balanced, and fastest routes with detailed safety analysis</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-map"></i>
+                    </div>
+                    <h3>Interactive Maps</h3>
+                    <p>Visual route preview with safety zones and navigation interface</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-check"></i>
+                    </div>
+                    <h3>AI Safety Analysis</h3>
+                    <p>Real-time safety scoring based on lighting, police presence, and more</p>
+                </div>
+            </div>
+            
+            <div class="route-planner">
+                <h3 style="margin-bottom: 1.5rem; color: #1f2937; text-align: center;">
+                    <i class="fas fa-route"></i> Plan Your Safe Route
+                </h3>
+                
+                <div class="input-section">
+                    <div class="input-group">
+                        <label for="from-location">From (Current Location)</label>
+                        <input type="text" id="from-location" placeholder="Getting your location..." readonly>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="to-location">To (Enter place name)</label>
+                        <input type="text" id="to-location" placeholder="e.g., India Gate, Airport, Red Fort, Connaught Place">
+                    </div>
+                </div>
+                
+                <button class="plan-btn" id="plan-route" onclick="planEnhancedRoute()">
+                    <i class="fas fa-route"></i>
+                    Find Safe Routes
+                </button>
+            </div>
+            
+            <div id="route-results" class="route-results" style="display: none;">
+                <!-- Enhanced route results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Include required scripts -->
+    <script src="../../assets/js/openstreetmap-config.js"></script>
+    <script src="../../assets/js/enhanced-location-manager.js"></script>
+    <script src="../../assets/js/firebase-config.js"></script>
+    <script src="../../assets/js/firebase-data-manager.js"></script>
+    <script src="../../assets/js/data-manager.js"></script>
+    <script src="../../assets/js/community.js"></script>
+    <script src="../../assets/js/fix-routes.js"></script>
+
+    <script>
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🛡️ Enhanced Safe Routes Demo Loaded');
+            updateStatus('Enhanced Safe Routes system ready! Enter place names instead of coordinates.', 'success');
+            
+            // Get current location
+            getCurrentLocationForDemo();
+            
+            // Add enter key support
+            document.getElementById('to-location').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    planEnhancedRoute();
+                }
+            });
+            
+            // Add place suggestions
+            addPlaceSuggestions();
+        });
+        
+        function updateStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            status.className = `status ${type}`;
+            status.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                ${message}
+            `;
+        }
+        
+        async function getCurrentLocationForDemo() {
+            const fromInput = document.getElementById('from-location');
+            
+            try {
+                fromInput.value = 'Getting precise location...';
+                
+                // Use the enhanced location system if available
+                let location;
+                if (typeof getCurrentLocationWithFallback === 'function') {
+                    location = await getCurrentLocationWithFallback();
+                } else {
+                    // Fallback to standard geolocation
+                    location = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(
+                            (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+                            reject,
+                            { enableHighAccuracy: true, timeout: 10000 }
+                        );
+                    });
+                }
+                
+                // Try to get readable address
+                try {
+                    if (typeof getRealAddress === 'function') {
+                        const address = await getRealAddress(location.lat, location.lng);
+                        fromInput.value = `📍 ${address}`;
+                    } else {
+                        fromInput.value = `📍 Current Location (${location.lat.toFixed(4)}, ${location.lng.toFixed(4)})`;
+                    }
+                } catch (error) {
+                    fromInput.value = `📍 Current Location (${location.lat.toFixed(4)}, ${location.lng.toFixed(4)})`;
+                }
+                
+                updateStatus('Location detected! Now enter your destination using place names.', 'success');
+                
+            } catch (error) {
+                fromInput.value = '📍 Current Location (Enable GPS for precise location)';
+                updateStatus('Location access limited. You can still test with place names!', 'warning');
+            }
+        }
+        
+        function planEnhancedRoute() {
+            const destination = document.getElementById('to-location').value.trim();
+            const resultsDiv = document.getElementById('route-results');
+            
+            if (!destination) {
+                updateStatus('Please enter a destination (e.g., India Gate, Airport, Red Fort)', 'warning');
+                document.getElementById('to-location').focus();
+                return;
+            }
+            
+            // Use the enhanced route planning from fix-routes.js
+            if (typeof planOpenStreetMapRoute === 'function') {
+                try {
+                    // Set up the results container
+                    resultsDiv.innerHTML = '<div id="route-options"></div>';
+                    resultsDiv.style.display = 'block';
+                    
+                    // Call the enhanced route planning function
+                    planOpenStreetMapRoute(destination);
+                } catch (error) {
+                    console.error('Enhanced route planning failed:', error);
+                    showDemoRoutes(destination, resultsDiv);
+                }
+            } else {
+                // Fallback demo
+                showDemoRoutes(destination, resultsDiv);
+            }
+        }
+        
+        function showDemoRoutes(destination, resultsDiv) {
+            const planBtn = document.getElementById('plan-route');
+            
+            planBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finding Safe Routes...';
+            planBtn.disabled = true;
+            updateStatus(`Analyzing safe routes to ${destination}...`, 'info');
+            
+            setTimeout(() => {
+                resultsDiv.innerHTML = `
+                    <h3 style="margin-bottom: 1.5rem; color: #1f2937; text-align: center;">
+                        <i class="fas fa-map-marked-alt"></i> Safe Routes to ${destination}
+                    </h3>
+                    
+                    <div style="display: grid; gap: 1.5rem;">
+                        <div style="background: white; border: 2px solid #10b981; border-radius: 16px; padding: 1.5rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); display: flex; align-items: center; justify-content: center; color: #10b981; font-size: 1.8rem;">
+                                    <i class="fas fa-shield-check"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <h4 style="margin: 0 0 0.5rem 0; color: #1f2937;">Safest Route</h4>
+                                    <div style="display: flex; gap: 1rem; font-size: 0.9rem; color: #6b7280;">
+                                        <span><i class="fas fa-clock"></i> 18 min</span>
+                                        <span><i class="fas fa-route"></i> 4.2 km</span>
+                                        <span><i class="fas fa-shield-alt" style="color: #10b981;"></i> 95% Safe</span>
+                                    </div>
+                                </div>
+                                <button onclick="startDemoNavigation('Safest Route', '${destination}')" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; border: none; padding: 0.75rem 1.25rem; border-radius: 8px; cursor: pointer;">
+                                    <i class="fas fa-play"></i> Start
+                                </button>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.05); border-radius: 6px; font-size: 0.85rem;">
+                                    <i class="fas fa-check" style="color: #10b981;"></i> Well-lit main roads
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.05); border-radius: 6px; font-size: 0.85rem;">
+                                    <i class="fas fa-check" style="color: #10b981;"></i> Police patrol areas
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.05); border-radius: 6px; font-size: 0.85rem;">
+                                    <i class="fas fa-check" style="color: #10b981;"></i> CCTV coverage
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: white; border: 2px solid #3b82f6; border-radius: 16px; padding: 1.5rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); display: flex; align-items: center; justify-content: center; color: #3b82f6; font-size: 1.8rem;">
+                                    <i class="fas fa-balance-scale"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <h4 style="margin: 0 0 0.5rem 0; color: #1f2937;">Balanced Route</h4>
+                                    <div style="display: flex; gap: 1rem; font-size: 0.9rem; color: #6b7280;">
+                                        <span><i class="fas fa-clock"></i> 14 min</span>
+                                        <span><i class="fas fa-route"></i> 3.8 km</span>
+                                        <span><i class="fas fa-shield-alt" style="color: #3b82f6;"></i> 85% Safe</span>
+                                    </div>
+                                </div>
+                                <button onclick="startDemoNavigation('Balanced Route', '${destination}')" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.75rem 1.25rem; border-radius: 8px; cursor: pointer;">
+                                    <i class="fas fa-play"></i> Start
+                                </button>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: rgba(59, 130, 246, 0.05); border-radius: 6px; font-size: 0.85rem;">
+                                    <i class="fas fa-check" style="color: #3b82f6;"></i> Mix of main & side roads
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: rgba(59, 130, 246, 0.05); border-radius: 6px; font-size: 0.85rem;">
+                                    <i class="fas fa-check" style="color: #3b82f6;"></i> Moderate traffic
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: rgba(245, 158, 11, 0.05); border-radius: 6px; font-size: 0.85rem;">
+                                    <i class="fas fa-exclamation" style="color: #f59e0b;"></i> One construction zone
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                resultsDiv.style.display = 'block';
+                planBtn.innerHTML = '<i class="fas fa-route"></i> Find Safe Routes';
+                planBtn.disabled = false;
+                
+                updateStatus(`Found 2 safe routes to ${destination}! Choose your preferred option.`, 'success');
+            }, 2000);
+        }
+        
+        function startDemoNavigation(routeName, destination) {
+            updateStatus(`🧭 Navigation started: ${routeName} to ${destination}`, 'success');
+            
+            // Show demo navigation interface
+            setTimeout(() => {
+                updateStatus(`✅ Navigation active - Follow the highlighted path to ${destination}`, 'success');
+            }, 1000);
+        }
+        
+        function addPlaceSuggestions() {
+            const toInput = document.getElementById('to-location');
+            const suggestions = [
+                'India Gate', 'Red Fort', 'Connaught Place', 'Lotus Temple', 'Qutub Minar',
+                'Airport', 'Railway Station', 'Metro Station', 'AIIMS Hospital', 'Delhi University'
+            ];
+            
+            toInput.addEventListener('focus', function() {
+                if (!this.value) {
+                    const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+                    this.placeholder = `Try: ${randomSuggestion}`;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

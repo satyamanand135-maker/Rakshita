@@ -1,0 +1,267 @@
+/* RAKSHITA - THEME CONFIGURATION */
+/* Easily customizable theme variables */
+
+:root {
+    /* ===== THEME VARIANTS ===== */
+    /* You can switch between different theme variants by changing these values */
+    
+    /* VARIANT 1: Cyber Blue (Default) */
+    --theme-primary: #00d4ff;
+    --theme-secondary: #ff6b6b;
+    --theme-accent: #a55eea;
+    --theme-success: #51cf66;
+    --theme-warning: #ffd43b;
+    --theme-danger: #ff4757;
+    
+    /* VARIANT 2: Neon Purple (Uncomment to use) */
+    /*
+    --theme-primary: #a55eea;
+    --theme-secondary: #00d4ff;
+    --theme-accent: #ff6b6b;
+    --theme-success: #51cf66;
+    --theme-warning: #ffd43b;
+    --theme-danger: #ff4757;
+    */
+    
+    /* VARIANT 3: Matrix Green (Uncomment to use) */
+    /*
+    --theme-primary: #51cf66;
+    --theme-secondary: #00d4ff;
+    --theme-accent: #ffd43b;
+    --theme-success: #51cf66;
+    --theme-warning: #ffd43b;
+    --theme-danger: #ff4757;
+    */
+    
+    /* VARIANT 4: Sunset Orange (Uncomment to use) */
+    /*
+    --theme-primary: #ff6b6b;
+    --theme-secondary: #ffd43b;
+    --theme-accent: #a55eea;
+    --theme-success: #51cf66;
+    --theme-warning: #ffd43b;
+    --theme-danger: #ff4757;
+    */
+    
+    /* ===== BACKGROUND VARIANTS ===== */
+    /* VARIANT 1: Deep Space (Default) */
+    --bg-gradient: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 30%, #16213e 60%, #2d1b69 100%);
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #1a1a2e;
+    --bg-tertiary: #16213e;
+    --bg-elevated: #2d1b69;
+    
+    /* VARIANT 2: Midnight Blue (Uncomment to use) */
+    /*
+    --bg-gradient: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 30%, #2d1b4f 60%, #3d2b69 100%);
+    --bg-primary: #0f0f23;
+    --bg-secondary: #1a1a3a;
+    --bg-tertiary: #2d1b4f;
+    --bg-elevated: #3d2b69;
+    */
+    
+    /* VARIANT 3: Dark Forest (Uncomment to use) */
+    /*
+    --bg-gradient: linear-gradient(135deg, #0a0f0a 0%, #1a2e1a 30%, #16213e 60%, #2d4b2d 100%);
+    --bg-primary: #0a0f0a;
+    --bg-secondary: #1a2e1a;
+    --bg-tertiary: #16213e;
+    --bg-elevated: #2d4b2d;
+    */
+    
+    /* ===== ANIMATION SETTINGS ===== */
+    --animation-speed-fast: 0.2s;
+    --animation-speed-normal: 0.3s;
+    --animation-speed-slow: 0.5s;
+    --animation-easing: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* ===== GLOW EFFECTS ===== */
+    --glow-intensity-low: 0.3;
+    --glow-intensity-medium: 0.5;
+    --glow-intensity-high: 0.8;
+    
+    /* ===== BORDER RADIUS ===== */
+    --radius-small: 8px;
+    --radius-medium: 12px;
+    --radius-large: 20px;
+    --radius-extra-large: 30px;
+    --radius-round: 50px;
+    
+    /* ===== SPACING ===== */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    
+    /* ===== FONT WEIGHTS ===== */
+    --font-light: 300;
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+    --font-extrabold: 800;
+    --font-black: 900;
+    
+    /* ===== COMPONENT SPECIFIC SETTINGS ===== */
+    
+    /* Buttons */
+    --button-padding: 0.75rem 1.5rem;
+    --button-padding-large: 1rem 2rem;
+    --button-padding-small: 0.5rem 1rem;
+    --button-border-radius: var(--radius-round);
+    --button-font-weight: var(--font-semibold);
+    
+    /* Cards */
+    --card-padding: 2rem;
+    --card-border-radius: var(--radius-large);
+    --card-border-width: 1px;
+    --card-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    
+    /* Navigation */
+    --nav-height: 70px;
+    --nav-padding: 0 1rem;
+    --nav-item-padding: 0.5rem 1rem;
+    --nav-item-border-radius: var(--radius-small);
+    
+    /* Dashboard */
+    --dashboard-sidebar-width: 280px;
+    --dashboard-header-height: 80px;
+    --dashboard-content-padding: 2rem;
+    --dashboard-section-gap: 1rem;
+    
+    /* Forms */
+    --input-padding: 0.75rem;
+    --input-border-radius: var(--radius-small);
+    --input-border-width: 2px;
+    --input-font-weight: var(--font-medium);
+    
+    /* Tables */
+    --table-cell-padding: 0.75rem;
+    --table-header-padding: 1rem;
+    --table-border-width: 1px;
+    
+    /* Modals */
+    --modal-border-radius: var(--radius-large);
+    --modal-padding: 2rem;
+    --modal-max-width: 90vw;
+    --modal-max-height: 90vh;
+}
+
+/* ===== THEME UTILITY CLASSES ===== */
+
+/* Color Utilities */
+.text-primary { color: var(--theme-primary) !important; }
+.text-secondary { color: var(--theme-secondary) !important; }
+.text-accent { color: var(--theme-accent) !important; }
+.text-success { color: var(--theme-success) !important; }
+.text-warning { color: var(--theme-warning) !important; }
+.text-danger { color: var(--theme-danger) !important; }
+
+.bg-primary { background: var(--theme-primary) !important; }
+.bg-secondary { background: var(--theme-secondary) !important; }
+.bg-accent { background: var(--theme-accent) !important; }
+.bg-success { background: var(--theme-success) !important; }
+.bg-warning { background: var(--theme-warning) !important; }
+.bg-danger { background: var(--theme-danger) !important; }
+
+/* Gradient Utilities */
+.bg-gradient-primary { 
+    background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%) !important; 
+}
+.bg-gradient-secondary { 
+    background: linear-gradient(135deg, var(--theme-secondary) 0%, var(--theme-accent) 100%) !important; 
+}
+.bg-gradient-success { 
+    background: linear-gradient(135deg, var(--theme-success) 0%, var(--theme-primary) 100%) !important; 
+}
+
+/* Glow Utilities */
+.glow-low { 
+    box-shadow: 0 0 20px rgba(var(--theme-primary-rgb), var(--glow-intensity-low)) !important; 
+}
+.glow-medium { 
+    box-shadow: 0 0 30px rgba(var(--theme-primary-rgb), var(--glow-intensity-medium)) !important; 
+}
+.glow-high { 
+    box-shadow: 0 0 40px rgba(var(--theme-primary-rgb), var(--glow-intensity-high)) !important; 
+}
+
+/* Animation Utilities */
+.animate-fast { transition: all var(--animation-speed-fast) var(--animation-easing) !important; }
+.animate-normal { transition: all var(--animation-speed-normal) var(--animation-easing) !important; }
+.animate-slow { transition: all var(--animation-speed-slow) var(--animation-easing) !important; }
+
+/* Border Radius Utilities */
+.rounded-sm { border-radius: var(--radius-small) !important; }
+.rounded-md { border-radius: var(--radius-medium) !important; }
+.rounded-lg { border-radius: var(--radius-large) !important; }
+.rounded-xl { border-radius: var(--radius-extra-large) !important; }
+.rounded-full { border-radius: var(--radius-round) !important; }
+
+/* Spacing Utilities */
+.p-xs { padding: var(--spacing-xs) !important; }
+.p-sm { padding: var(--spacing-sm) !important; }
+.p-md { padding: var(--spacing-md) !important; }
+.p-lg { padding: var(--spacing-lg) !important; }
+.p-xl { padding: var(--spacing-xl) !important; }
+.p-2xl { padding: var(--spacing-2xl) !important; }
+
+.m-xs { margin: var(--spacing-xs) !important; }
+.m-sm { margin: var(--spacing-sm) !important; }
+.m-md { margin: var(--spacing-md) !important; }
+.m-lg { margin: var(--spacing-lg) !important; }
+.m-xl { margin: var(--spacing-xl) !important; }
+.m-2xl { margin: var(--spacing-2xl) !important; }
+
+/* Font Weight Utilities */
+.font-light { font-weight: var(--font-light) !important; }
+.font-normal { font-weight: var(--font-normal) !important; }
+.font-medium { font-weight: var(--font-medium) !important; }
+.font-semibold { font-weight: var(--font-semibold) !important; }
+.font-bold { font-weight: var(--font-bold) !important; }
+.font-extrabold { font-weight: var(--font-extrabold) !important; }
+.font-black { font-weight: var(--font-black) !important; }
+
+/* ===== THEME CUSTOMIZATION INSTRUCTIONS ===== */
+/*
+To customize the theme:
+
+1. COLOR SCHEME:
+   - Change the --theme-primary, --theme-secondary, etc. values
+   - Use the pre-defined variants by commenting/uncommenting sections
+   - Create your own color scheme by defining custom hex values
+
+2. BACKGROUND:
+   - Modify --bg-gradient for the main background
+   - Adjust --bg-primary, --bg-secondary, etc. for component backgrounds
+   - Use the pre-defined background variants
+
+3. ANIMATIONS:
+   - Adjust --animation-speed-* values to make animations faster/slower
+   - Change --animation-easing for different animation curves
+   - Modify --glow-intensity-* for stronger/weaker glow effects
+
+4. SPACING & SIZING:
+   - Modify --spacing-* values to adjust component spacing
+   - Change --radius-* values for different border radius styles
+   - Adjust component-specific variables like --nav-height, --card-padding, etc.
+
+5. TYPOGRAPHY:
+   - Modify --font-* values to change font weights
+   - Add custom font families by updating the font-family declarations
+
+6. COMPONENT CUSTOMIZATION:
+   - Each component has its own set of variables (buttons, cards, navigation, etc.)
+   - Modify these to fine-tune individual component appearances
+
+Example: To create a green-themed variant:
+--theme-primary: #51cf66;
+--theme-secondary: #69db7c;
+--theme-accent: #8ce99a;
+
+Example: To make animations faster:
+--animation-speed-normal: 0.15s;
+--animation-speed-slow: 0.25s;
+*/

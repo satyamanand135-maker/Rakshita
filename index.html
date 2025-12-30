@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rakshita - Your Smart Travel Safety Companion</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/theme-config.css">
+    <link rel="stylesheet" href="assets/css/perfect-dark-theme.css">
+    <link rel="stylesheet" href="assets/css/dashboard-enhancements.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Scripts -->
+    <script src="assets/js/openstreetmap-config.js"></script>
+    <script src="assets/js/enhanced-location-manager.js"></script>
+    <script src="assets/js/firebase-config.js"></script>
+    <script src="assets/js/firebase-data-manager.js"></script>
+    <script src="assets/js/data-manager.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script src="assets/js/community.js"></script>
+    <script src="assets/js/fix-routes.js"></script>
+    
+    <!-- Floating Particles Animation -->
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particleContainer = document.createElement('div');
+            particleContainer.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: -1;
+            `;
+            document.body.appendChild(particleContainer);
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: absolute;
+                    width: ${Math.random() * 4 + 1}px;
+                    height: ${Math.random() * 4 + 1}px;
+                    background: ${Math.random() > 0.5 ? '#00d4ff' : '#ff6b6b'};
+                    border-radius: 50%;
+                    opacity: ${Math.random() * 0.5 + 0.2};
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    animation: float ${Math.random() * 10 + 10}s linear infinite;
+                `;
+                particleContainer.appendChild(particle);
+            }
+        }
+        
+        // Add CSS for particle animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0% {
+                    transform: translateY(100vh) rotate(0deg);
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 1;
+                }
+                90% {
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Initialize particles when page loads
+        document.addEventListener('DOMContentLoaded', createParticles);
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>Rakshita</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#authorities" class="nav-link">For Authorities</a>
+                <a href="pages/admin/admin-auth.html" class="nav-link admin-link" target="_blank">
+                    <i class="fas fa-shield-alt"></i> Admin Access
+                </a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <button class="login-btn" onclick="openLoginModal()">Login</button>
+                <button class="cta-btn">Download App</button>
+            </div>
+            <div class="user-menu" id="user-menu" style="display: none;">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span class="user-name" id="user-name">John Doe</span>
+                </div>
+                <button class="dashboard-btn" onclick="openDashboard()">My Dashboard</button>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">Your Smart Travel Safety Companion</h1>
+                    <p class="hero-subtitle">Rakshita uses AI-powered monitoring, geo-fencing, and real-time alerts to ensure safe and worry-free travel. Navigate confidently with intelligent protection at your fingertips.</p>
+                    <div class="hero-buttons">
+                        <button class="btn-primary" onclick="openLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Start Using Now
+                        </button>
+                        <button class="btn-secondary">
+                            <i class="fas fa-download"></i>
+                            Download App
+                        </button>
+                        <button class="btn-secondary">
+                            <i class="fas fa-play"></i>
+                            Explore Features
+                        </button>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number">50K+</span>
+                            <span class="stat-label">Safe Travelers</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">99.9%</span>
+                            <span class="stat-label">Uptime</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">Monitoring</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="app-interface">
+                                <div class="status-bar">
+                                    <div class="status-indicator safe">
+                                        <i class="fas fa-shield-check"></i>
+                                        <span>Safe Zone</span>
+                                    </div>
+                                </div>
+                                <div class="map-view">
+                                    <div class="location-pin">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="safety-radius"></div>
+                                </div>
+                                <div class="quick-actions">
+                                    <button class="sos-btn">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        SOS
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="floating-elements">
+                        <div class="floating-icon" style="--delay: 0s">
+                            <i class="fas fa-satellite"></i>
+                        </div>
+                        <div class="floating-icon" style="--delay: 1s">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="floating-icon" style="--delay: 2s">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-bg-pattern"></div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>Intelligent Protection for Modern Travelers</h2>
+                    <p>Rakshita combines cutting-edge AI technology with real-time monitoring to create an invisible safety net around every traveler. Our intelligent system learns from global safety patterns, predicts potential risks, and guides you away from danger zones before they become threats.</p>
+                    <div class="about-features">
+                        <div class="feature-point">
+                            <i class="fas fa-brain"></i>
+                            <span>AI-Powered Risk Assessment</span>
+                        </div>
+                        <div class="feature-point">
+                            <i class="fas fa-globe-americas"></i>
+                            <span>Global Safety Network</span>
+                        </div>
+                        <div class="feature-point">
+                            <i class="fas fa-clock"></i>
+                            <span>Real-Time Protection</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-visual">
+                    <div class="ai-illustration">
+                        <div class="traveler-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="scanning-rings">
+                            <div class="ring ring-1"></div>
+                            <div class="ring ring-2"></div>
+                            <div class="ring ring-3"></div>
+                        </div>
+                        <div class="data-points">
+                            <div class="data-point" style="--angle: 45deg">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="data-point" style="--angle: 135deg">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <div class="data-point" style="--angle: 225deg">
+                                <i class="fas fa-shield-check"></i>
+                            </div>
+                            <div class="data-point" style="--angle: 315deg">
+                                <i class="fas fa-satellite"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Key Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Advanced Safety Features</h2>
+                <p>Try our interactive demos - Experience Rakshita's protection in action</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card interactive" data-feature="location">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3>Real-Time Location Tracking</h3>
+                    <p>Precise GPS monitoring with intelligent location sharing to trusted contacts and emergency services.</p>
+                    <button class="demo-btn" onclick="window.open('pages/guides/location-tracking-guide.html', '_blank')">Try Live Demo</button>
+                    <div class="demo-content" id="location-demo">
+                        <div class="location-display">
+                            <div class="location-info">
+                                <span class="location-label">Current Location:</span>
+                                <span class="location-coords" id="coords">Getting location...</span>
+                            </div>
+                            <div class="location-status">
+                                <i class="fas fa-circle status-indicator"></i>
+                                <span id="location-status">Tracking Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card interactive" data-feature="geofence">
+                    <div class="feature-icon">
+                        <i class="fas fa-draw-polygon"></i>
+                    </div>
+                    <h3>Geo-Fence Danger Alerts</h3>
+                    <p>Smart boundaries that automatically warn you when approaching high-risk areas or unsafe zones.</p>
+                    <button class="demo-btn" onclick="window.open('pages/guides/geofencing-guide.html', '_blank')">Try Alert System</button>
+                    <div class="demo-content" id="geofence-demo">
+                        <div class="geofence-simulator">
+                            <div class="zone-selector">
+                                <button class="zone-btn safe" data-zone="safe">Safe Zone</button>
+                                <button class="zone-btn warning" data-zone="warning">Warning Zone</button>
+                                <button class="zone-btn danger" data-zone="danger">Danger Zone</button>
+                            </div>
+                            <div class="alert-display" id="alert-display">
+                                <i class="fas fa-shield-check"></i>
+                                <span>You are in a Safe Zone</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card interactive" data-feature="sos">
+                    <div class="feature-icon">
+                        <i class="fas fa-hand-paper"></i>
+                    </div>
+                    <h3>One-Tap SOS System</h3>
+                    <p>Instant emergency alerts to authorities and emergency contacts with your exact location and situation.</p>
+                    <button class="demo-btn" onclick="window.open('pages/guides/emergency-sos-guide.html', '_blank')">Test SOS Alert</button>
+                    <div class="demo-content" id="sos-demo">
+                        <div class="sos-simulator">
+                            <button class="sos-button" id="sos-trigger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>EMERGENCY SOS</span>
+                            </button>
+                            <div class="sos-status" id="sos-status">
+                                <p>Press the SOS button to simulate emergency alert</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card interactive" data-feature="ai">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI-Powered Threat Detection</h3>
+                    <p>Machine learning algorithms analyze patterns to predict and prevent potential safety threats.</p>
+                    <button class="demo-btn" onclick="window.open('pages/guides/ai-threat-detection-guide.html', '_blank')">Run AI Analysis</button>
+                    <div class="demo-content" id="ai-demo">
+                        <div class="ai-analyzer">
+                            <div class="analysis-progress">
+                                <div class="progress-bar" id="ai-progress"></div>
+                            </div>
+                            <div class="threat-assessment" id="threat-results">
+                                <div class="assessment-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>Crowd Density: <strong id="crowd-level">Analyzing...</strong></span>
+                                </div>
+                                <div class="assessment-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Time Risk: <strong id="time-risk">Analyzing...</strong></span>
+                                </div>
+                                <div class="assessment-item">
+                                    <i class="fas fa-map"></i>
+                                    <span>Area Safety: <strong id="area-safety">Analyzing...</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card interactive" data-feature="routing">
+                    <div class="feature-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <h3>Safe-Path Recommendations</h3>
+                    <p>Intelligent routing that suggests the safest paths based on real-time safety data and crowd analysis.</p>
+                    <button class="demo-btn" onclick="window.open('pages/guides/safe-route-planning-guide.html', '_blank')">Get Safe Route</button>
+                    <div class="demo-content" id="routing-demo">
+                        <div class="route-planner">
+                            <div class="route-inputs">
+                                <input type="text" placeholder="From: Current Location" readonly>
+                                <input type="text" placeholder="To: Enter destination" id="destination-input">
+                                <button class="route-btn" id="find-route">Find Safe Route</button>
+                            </div>
+                            <div class="route-results" id="route-results">
+                                <div class="route-option safe-route">
+                                    <i class="fas fa-shield-check"></i>
+                                    <div class="route-info">
+                                        <strong>Safest Route</strong>
+                                        <span>12 min • Well-lit streets • Low crime area</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card interactive" data-feature="community">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Community Safety Network</h3>
+                    <p>Connect with fellow travelers and local safety ambassadors for enhanced protection and support.</p>
+                    <button class="demo-btn" onclick="window.open('pages/guides/community-safety-guide.html', '_blank')">Join Network</button>
+                    <div class="demo-content" id="community-demo">
+                        <div class="community-feed">
+                            <div class="safety-update">
+                                <div class="update-avatar">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <div class="update-content">
+                                    <strong>Safety Ambassador</strong>
+                                    <p>Area around Connaught Place is safe. Good lighting and police presence.</p>
+                                    <span class="update-time">2 min ago</span>
+                                </div>
+                            </div>
+                            <div class="safety-update">
+                                <div class="update-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="update-content">
+                                    <strong>Fellow Traveler</strong>
+                                    <p>Avoid Karol Bagh market area after 9 PM - construction work with poor lighting.</p>
+                                    <span class="update-time">15 min ago</span>
+                                </div>
+                            </div>
+                            <div class="community-actions">
+                                <button class="action-btn">Share Safety Tip</button>
+                                <button class="action-btn">Request Help</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How Rakshita Works</h2>
+                <p>Three simple steps to complete travel safety</p>
+            </div>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Install the App</h3>
+                        <p>Download Rakshita from your app store and complete the quick setup process with your travel preferences.</p>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-toggle-on"></i>
+                        </div>
+                        <h3>Enable Smart Safety</h3>
+                        <p>Activate intelligent monitoring, set your emergency contacts, and customize your safety preferences.</p>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <h3>Travel Worry-Free</h3>
+                        <p>Explore with confidence knowing Rakshita is continuously monitoring and protecting your journey.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Authorities Section -->
+    <section id="authorities" class="authorities">
+        <div class="container">
+            <div class="authorities-content">
+                <div class="authorities-text">
+                    <h2>For Authorities Dashboard</h2>
+                    <p>Empower law enforcement and emergency services with real-time insights and predictive analytics for enhanced tourist safety management.</p>
+                    <div class="authorities-features">
+                        <div class="auth-feature">
+                            <i class="fas fa-eye"></i>
+                            <div>
+                                <h4>Live Monitoring</h4>
+                                <p>Real-time tourist movement tracking and safety status across your jurisdiction</p>
+                            </div>
+                        </div>
+                        <div class="auth-feature">
+                            <i class="fas fa-bell"></i>
+                            <div>
+                                <h4>Emergency Alerts</h4>
+                                <p>Instant notifications with precise location data for rapid emergency response</p>
+                            </div>
+                        </div>
+                        <div class="auth-feature">
+                            <i class="fas fa-chart-line"></i>
+                            <div>
+                                <h4>Predictive Analytics</h4>
+                                <p>AI-driven insights to identify potential safety hotspots and prevent incidents</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="window.open('pages/guides/authorities-dashboard-guide.html', '_blank')">View Dashboard Guide</button>
+                </div>
+                <div class="dashboard-preview">
+                    <div class="dashboard-screen">
+                        <div class="dashboard-header">
+                            <h4>Safety Command Center</h4>
+                            <div class="status-indicators">
+                                <span class="indicator active">Live</span>
+                                <span class="indicator">24/7</span>
+                            </div>
+                        </div>
+                        <div class="dashboard-stats">
+                            <div class="stat-card">
+                                <span class="stat-value">1,247</span>
+                                <span class="stat-label">Active Travelers</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value">3</span>
+                                <span class="stat-label">Active Alerts</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value">98.7%</span>
+                                <span class="stat-label">Safety Score</span>
+                            </div>
+                        </div>
+                        <div class="dashboard-map">
+                            <div class="map-pins">
+                                <div class="pin safe"></div>
+                                <div class="pin warning"></div>
+                                <div class="pin safe"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>Trusted by Travelers Worldwide</h2>
+                <p>Real stories from real travelers who trust Rakshita</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"As a solo female traveler, Rakshita gives me the confidence to explore new destinations. The AI alerts helped me avoid a potentially dangerous area in Bangkok."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <h4>Sarah Chen</h4>
+                            <span>Solo Traveler</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Traveling with my family in crowded cities used to be stressful. Rakshita's real-time monitoring and safe path recommendations make family trips enjoyable again."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="author-info">
+                            <h4>The Patel Family</h4>
+                            <span>Family Travelers</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The one-tap SOS feature saved my trip when I got lost in Mumbai. Emergency services reached me within minutes thanks to the precise location sharing."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <h4>Marcus Johnson</h4>
+                            <span>Business Traveler</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Travel Smart. Travel Safe. With Rakshita.</h2>
+                <p>Join thousands of travelers who trust Rakshita for their safety. Download now and experience worry-free travel.</p>
+                <div class="cta-buttons">
+                    <button class="btn-primary large">
+                        <i class="fab fa-apple"></i>
+                        Download for iOS
+                    </button>
+                    <button class="btn-primary large">
+                        <i class="fab fa-google-play"></i>
+                        Download for Android
+                    </button>
+                </div>
+                <div class="early-access">
+                    <p>Or get early access to new features</p>
+                    <form class="early-access-form">
+                        <input type="email" placeholder="Enter your email address" required>
+                        <button type="submit">Get Early Access</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Rakshita</span>
+                    </div>
+                    <p>Your intelligent travel safety companion, powered by AI and designed for the modern traveler.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Rakshita. All rights reserved. Made with ❤️ for safer travels.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login/Register Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Welcome to Rakshita</h2>
+                <span class="close" onclick="closeAuthModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Login to Dashboard</button>
+                    <p class="auth-switch">Don't have an account? <a href="#" onclick="switchToRegister()">Sign up here</a></p>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="register-name">Full Name</label>
+                        <input type="text" id="register-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email Address</label>
+                        <input type="email" id="register-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-phone">Phone Number</label>
+                        <input type="tel" id="register-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emergency-contact">Emergency Contact</label>
+                        <input type="tel" id="emergency-contact" placeholder="+91-9876543210" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Create Account</button>
+                    <p class="auth-switch">Already have an account? <a href="#" onclick="switchToLogin()">Login here</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Dashboard -->
+    <div id="user-dashboard" class="dashboard-overlay">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <div class="dashboard-title">
+                    <h2>Rakshita Safety Dashboard</h2>
+                    <span class="user-greeting">Welcome back, <span id="dashboard-user-name">John</span>!</span>
+                </div>
+                <div class="dashboard-controls">
+                    <button class="minimize-btn" onclick="minimizeDashboard()">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button class="close-dashboard-btn" onclick="closeDashboard()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="dashboard-sidebar">
+                    <nav class="dashboard-nav">
+                        <a href="#" class="nav-item active" data-section="overview">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Overview</span>
+                        </a>
+                        <a href="#" class="nav-item" data-section="location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Live Tracking</span>
+                        </a>
+                        <a href="#" class="nav-item" data-section="safety">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Safety Zones</span>
+                        </a>
+                        <a href="#" class="nav-item" data-section="emergency">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Emergency</span>
+                        </a>
+                        <a href="#" class="nav-item" data-section="routes">
+                            <i class="fas fa-route"></i>
+                            <span>Safe Routes</span>
+                        </a>
+                        <a href="#" class="nav-item" data-section="community">
+                            <i class="fas fa-users"></i>
+                            <span>Community</span>
+                        </a>
+                        <a href="#" class="nav-item" data-section="settings">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="dashboard-main">
+                    <!-- Overview Section -->
+                    <div id="overview-section" class="dashboard-section active">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-shield-check"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>Safety Status</h3>
+                                    <p class="stat-value safe">SAFE</p>
+                                    <small>Current location is secure</small>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>Active Time</h3>
+                                    <p class="stat-value">2h 34m</p>
+                                    <small>Tracking session duration</small>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-route"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>Distance Traveled</h3>
+                                    <p class="stat-value">5.2 km</p>
+                                    <small>Today's journey</small>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>Nearby Travelers</h3>
+                                    <p class="stat-value">12</p>
+                                    <small>In your safety network</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-widgets">
+                            <div class="widget">
+                                <h3>Recent Activity</h3>
+                                <div class="activity-feed">
+                                    <div class="activity-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <div>
+                                            <p>Entered safe zone: India Gate Metro Station</p>
+                                            <small>2 minutes ago</small>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <i class="fas fa-route"></i>
+                                        <div>
+                                            <p>Safe route calculated to Hotel</p>
+                                            <small>15 minutes ago</small>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <i class="fas fa-users"></i>
+                                        <div>
+                                            <p>Connected with 3 nearby travelers</p>
+                                            <small>1 hour ago</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="widget">
+                                <h3>Quick Actions</h3>
+                                <div class="quick-actions">
+                                    <button class="quick-action-btn emergency">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <span>Emergency SOS</span>
+                                    </button>
+                                    <button class="quick-action-btn">
+                                        <i class="fas fa-share-alt"></i>
+                                        <span>Share Location</span>
+                                    </button>
+                                    <button class="quick-action-btn">
+                                        <i class="fas fa-route"></i>
+                                        <span>Find Safe Route</span>
+                                    </button>
+                                    <button class="quick-action-btn">
+                                        <i class="fas fa-comment"></i>
+                                        <span>Safety Tip</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Tracking Section -->
+                    <div id="location-section" class="dashboard-section">
+                        <div class="section-header">
+                            <h3>Live Location Tracking</h3>
+                            <div class="tracking-controls">
+                                <button class="toggle-btn active" id="tracking-toggle">
+                                    <i class="fas fa-pause"></i>
+                                    Pause Tracking
+                                </button>
+                                <button class="btn-secondary" id="refresh-tracking">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Refresh
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="location-dashboard">
+                            <!-- Real-time Status Card -->
+                            <div class="tracking-status-card">
+                                <div class="status-header">
+                                    <h4><i class="fas fa-satellite-dish"></i> Tracking Status</h4>
+                                    <div class="status-indicator" id="tracking-status">
+                                        <div class="status-dot active"></div>
+                                        <span>Active</span>
+                                    </div>
+                                </div>
+                                <div class="tracking-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Last Update:</span>
+                                        <span class="stat-value" id="last-update">Just now</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">Accuracy:</span>
+                                        <span class="stat-value" id="tracking-accuracy">Getting location...</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">Speed:</span>
+                                        <span class="stat-value" id="current-speed">0 km/h</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="location-content">
+                                <div class="map-container">
+                                    <div class="mock-map">
+                                        <div class="user-location" id="user-location-dot">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="safety-zones">
+                                            <div class="safe-zone"></div>
+                                            <div class="warning-zone"></div>
+                                        </div>
+                                        <div class="tracking-trail" id="tracking-trail">
+                                            <!-- Location history dots will appear here -->
+                                        </div>
+                                    </div>
+                                    <div class="map-controls">
+                                        <button class="map-btn" onclick="centerMap()">
+                                            <i class="fas fa-crosshairs"></i>
+                                        </button>
+                                        <button class="map-btn" onclick="toggleTrail()">
+                                            <i class="fas fa-route"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="location-info-panel">
+                                    <div class="current-location">
+                                        <h4><i class="fas fa-map-marker-alt"></i> Current Location</h4>
+                                        <div class="location-details">
+                                            <div class="address-container">
+                                                <p class="address" id="current-address">Getting location...</p>
+                                                <button class="retry-address-btn" id="retry-address" style="display: none;" title="Retry address lookup">
+                                                    <i class="fas fa-redo"></i>
+                                                </button>
+                                            </div>
+                                            <p class="coordinates" id="current-coords">0.000000, 0.000000</p>
+                                            <div class="location-meta" id="location-meta">
+                                                <small>Waiting for GPS signal...</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="location-sharing">
+                                        <h4><i class="fas fa-share-alt"></i> Location Sharing</h4>
+                                        <div class="sharing-controls">
+                                            <div class="sharing-toggle">
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" id="share-emergency" checked>
+                                                    <span class="slider"></span>
+                                                </label>
+                                                <span>Emergency Contacts</span>
+                                            </div>
+                                            <div class="sharing-toggle">
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" id="share-authorities" checked>
+                                                    <span class="slider"></span>
+                                                </label>
+                                                <span>Local Authorities</span>
+                                            </div>
+                                        </div>
+                                        <div class="sharing-contacts">
+                                            <div class="contact-item">
+                                                <i class="fas fa-user"></i>
+                                                <span>Emergency Contact</span>
+                                                <span class="status active">Active</span>
+                                            </div>
+                                            <div class="contact-item">
+                                                <i class="fas fa-shield-alt"></i>
+                                                <span>Local Authorities</span>
+                                                <span class="status active">Active</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tracking-history">
+                                        <h4><i class="fas fa-history"></i> Recent Locations</h4>
+                                        <div class="history-list" id="location-history">
+                                            <!-- Recent locations will be populated here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other sections will be added here -->
+                    <div id="safety-section" class="dashboard-section">
+                        <h3>Safety Zone Management</h3>
+                        <div class="safety-zone-panel">
+                            <!-- Current Location Status -->
+                            <div class="location-status-card">
+                                <div class="status-header">
+                                    <h4><i class="fas fa-map-marker-alt"></i> Current Location</h4>
+                                    <button class="refresh-location-btn" id="refresh-location">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                </div>
+                                <div class="location-info">
+                                    <div class="coordinates" id="current-coordinates">
+                                        <span class="label">Coordinates:</span>
+                                        <span class="value" id="coords-display">Getting location...</span>
+                                    </div>
+                                    <div class="address" id="current-address">
+                                        <span class="label">Address:</span>
+                                        <span class="value" id="address-display">Resolving address...</span>
+                                    </div>
+                                    <div class="accuracy" id="location-accuracy">
+                                        <span class="label">Accuracy:</span>
+                                        <span class="value" id="accuracy-display">-</span>
+                                    </div>
+                                </div>
+                                <div class="location-actions">
+                                    <button class="btn-primary" id="enable-location">
+                                        <i class="fas fa-location-arrow"></i> Enable Location
+                                    </button>
+                                    <button class="btn-secondary" id="manual-location">
+                                        <i class="fas fa-edit"></i> Set Manually
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Safety Zone Controls -->
+                            <div class="zone-controls">
+                                <div class="zone-tabs">
+                                    <button class="zone-tab active" data-zone-tab="current">
+                                        <i class="fas fa-shield-check"></i>
+                                        <span>Current Zone</span>
+                                    </button>
+                                    <button class="zone-tab" data-zone-tab="manage">
+                                        <i class="fas fa-cog"></i>
+                                        <span>Manage Zones</span>
+                                    </button>
+                                    <button class="zone-tab" data-zone-tab="alerts">
+                                        <i class="fas fa-bell"></i>
+                                        <span>Alert Settings</span>
+                                    </button>
+                                </div>
+
+                                <!-- Current Zone Tab -->
+                                <div id="current-zone-tab" class="zone-tab-content active">
+                                    <div class="current-zone-status">
+                                        <div class="zone-indicator" id="zone-indicator">
+                                            <div class="zone-icon">
+                                                <i class="fas fa-shield-alt"></i>
+                                            </div>
+                                            <div class="zone-info">
+                                                <h4 id="zone-status-title">Checking Safety Zone...</h4>
+                                                <p id="zone-status-description">Analyzing current location safety</p>
+                                            </div>
+                                            <div class="zone-level" id="zone-level">
+                                                <span class="level-indicator">?</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="nearby-zones" id="nearby-zones">
+                                            <h5>Nearby Safety Zones</h5>
+                                            <div class="zones-list" id="zones-list">
+                                                <!-- Nearby zones will be populated here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Manage Zones Tab -->
+                                <div id="manage-zone-tab" class="zone-tab-content">
+                                    <div class="zone-management">
+                                        <div class="zone-actions">
+                                            <button class="btn-primary" id="create-zone">
+                                                <i class="fas fa-plus"></i> Create Safety Zone
+                                            </button>
+                                            <button class="btn-secondary" id="import-zones">
+                                                <i class="fas fa-download"></i> Import Zones
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="zones-grid" id="user-zones">
+                                            <!-- User's safety zones will be displayed here -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Alert Settings Tab -->
+                                <div id="alerts-zone-tab" class="zone-tab-content">
+                                    <div class="alert-settings">
+                                        <h5>Zone Alert Preferences</h5>
+                                        <div class="setting-group">
+                                            <div class="setting-item">
+                                                <label>
+                                                    <input type="checkbox" id="enable-zone-alerts" checked>
+                                                    <span>Enable safety zone alerts</span>
+                                                </label>
+                                            </div>
+                                            <div class="setting-item">
+                                                <label>
+                                                    <input type="checkbox" id="enable-danger-alerts" checked>
+                                                    <span>Alert when entering danger zones</span>
+                                                </label>
+                                            </div>
+                                            <div class="setting-item">
+                                                <label>
+                                                    <input type="checkbox" id="enable-safe-alerts">
+                                                    <span>Notify when entering safe zones</span>
+                                                </label>
+                                            </div>
+                                            <div class="setting-item">
+                                                <label>
+                                                    <input type="checkbox" id="enable-sound-alerts" checked>
+                                                    <span>Play sound for alerts</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="alert-radius">
+                                            <label for="alert-radius-slider">Alert Radius: <span id="radius-value">500</span>m</label>
+                                            <input type="range" id="alert-radius-slider" min="100" max="2000" value="500" step="100">
+                                        </div>
+                                        
+                                        <div class="test-alerts">
+                                            <button class="btn-secondary" id="test-safe-alert">
+                                                <i class="fas fa-shield-check"></i> Test Safe Zone Alert
+                                            </button>
+                                            <button class="btn-warning" id="test-danger-alert">
+                                                <i class="fas fa-exclamation-triangle"></i> Test Danger Alert
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="emergency-section" class="dashboard-section">
+                        <h3>🚨 Emergency Response Center</h3>
+                        <div class="emergency-panel">
+                            <div class="sos-center">
+                                <button class="sos-main-btn" id="main-sos-btn" onclick="activateEmergencySOS()">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>EMERGENCY SOS</span>
+                                </button>
+                                <p>Press to activate emergency protocol</p>
+                                <div class="sos-countdown" id="sos-countdown" style="display: none;">
+                                    <div class="countdown-circle">
+                                        <span id="countdown-number">3</span>
+                                    </div>
+                                    <p>Calling emergency services in <span id="countdown-text">3</span> seconds...</p>
+                                    <button class="cancel-btn" onclick="cancelEmergencyCall()">Cancel</button>
+                                </div>
+                            </div>
+                            
+                            <div class="emergency-status" id="emergency-status" style="display: none;">
+                                <div class="status-header">
+                                    <i class="fas fa-phone-alt"></i>
+                                    <h4>Emergency Call Active</h4>
+                                </div>
+                                <div class="call-info">
+                                    <p><strong>Calling:</strong> <span id="calling-number">112 - Emergency Services</span></p>
+                                    <p><strong>Location Shared:</strong> <span id="shared-location">Getting location...</span></p>
+                                    <p><strong>Status:</strong> <span id="call-status">Connecting...</span></p>
+                                </div>
+                                <div class="emergency-actions">
+                                    <button class="end-call-btn" onclick="endEmergencyCall()">
+                                        <i class="fas fa-phone-slash"></i> End Call
+                                    </button>
+                                    <button class="add-info-btn" onclick="addEmergencyInfo()">
+                                        <i class="fas fa-info-circle"></i> Add Info
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="emergency-contacts">
+                                <h4><i class="fas fa-phone"></i> Quick Dial Emergency Numbers</h4>
+                                <div class="contact-list">
+                                    <div class="emergency-contact">
+                                        <div class="contact-info">
+                                            <i class="fas fa-phone emergency-icon"></i>
+                                            <span class="contact-name">Emergency Services</span>
+                                            <span class="contact-number">112</span>
+                                        </div>
+                                        <button class="call-btn" onclick="makeEmergencyCall('112', 'Emergency Services')">
+                                            <i class="fas fa-phone"></i> Call
+                                        </button>
+                                    </div>
+                                    <div class="emergency-contact">
+                                        <div class="contact-info">
+                                            <i class="fas fa-shield-alt police-icon"></i>
+                                            <span class="contact-name">Police</span>
+                                            <span class="contact-number">100</span>
+                                        </div>
+                                        <button class="call-btn" onclick="makeEmergencyCall('100', 'Police')">
+                                            <i class="fas fa-phone"></i> Call
+                                        </button>
+                                    </div>
+                                    <div class="emergency-contact">
+                                        <div class="contact-info">
+                                            <i class="fas fa-ambulance medical-icon"></i>
+                                            <span class="contact-name">Medical Emergency</span>
+                                            <span class="contact-number">108</span>
+                                        </div>
+                                        <button class="call-btn" onclick="makeEmergencyCall('108', 'Medical Emergency')">
+                                            <i class="fas fa-phone"></i> Call
+                                        </button>
+                                    </div>
+                                    <div class="emergency-contact">
+                                        <div class="contact-info">
+                                            <i class="fas fa-fire fire-icon"></i>
+                                            <span class="contact-name">Fire Department</span>
+                                            <span class="contact-number">101</span>
+                                        </div>
+                                        <button class="call-btn" onclick="makeEmergencyCall('101', 'Fire Department')">
+                                            <i class="fas fa-phone"></i> Call
+                                        </button>
+                                    </div>
+                                    <div class="emergency-contact">
+                                        <div class="contact-info">
+                                            <i class="fas fa-user-shield personal-icon"></i>
+                                            <span class="contact-name">Emergency Contact</span>
+                                            <span class="contact-number">+91-9876543210</span>
+                                        </div>
+                                        <button class="call-btn" onclick="makeEmergencyCall('+919876543210', 'Emergency Contact')">
+                                            <i class="fas fa-phone"></i> Call
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Add Personal Emergency Contact -->
+                                <div class="add-contact-section">
+                                    <h5><i class="fas fa-user-plus"></i> Add Personal Emergency Contact</h5>
+                                    <div class="add-contact-form">
+                                        <input type="text" id="contact-name" placeholder="Contact Name (e.g., Mom, Dad, Friend)">
+                                        <input type="tel" id="contact-number" placeholder="Phone Number (e.g., +91-9876543210)">
+                                        <button onclick="addEmergencyContact()" class="add-btn">
+                                            <i class="fas fa-plus"></i> Add Contact
+                                        </button>
+                                    </div>
+                                    <div id="emergency-contacts-grid" style="margin-top: 1rem;">
+                                        <!-- User emergency contacts will be displayed here -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="emergency-info">
+                                <h4><i class="fas fa-info-circle"></i> Emergency Information</h4>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>Location tracking active</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <i class="fas fa-users"></i>
+                                        <span>Contacts will be notified</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>Response time: 3-8 minutes</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <i class="fas fa-shield-check"></i>
+                                        <span>Help is on the way</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="routes-section" class="dashboard-section">
+                        <div class="routes-header">
+                            <h3><i class="fas fa-route"></i> Safe Route Planning</h3>
+                            <div class="route-status">
+                                <span class="status-indicator active">
+                                    <i class="fas fa-shield-check"></i>
+                                    AI Safety Analysis Active
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Route Planning Panel -->
+                        <div class="route-planner-full">
+                            <div class="route-inputs-section">
+                                <div class="route-inputs-full">
+                                    <div class="input-group">
+                                        <i class="fas fa-map-marker-alt start-marker"></i>
+                                        <input type="text" id="route-from" placeholder="From: Current Location" readonly>
+                                        <button class="location-btn" id="use-current-location" title="Use current location">
+                                            <i class="fas fa-crosshairs"></i>
+                                        </button>
+                                    </div>
+                                    <div class="input-group">
+                                        <i class="fas fa-map-marker-alt end-marker"></i>
+                                        <input type="text" id="route-to" placeholder="To: Enter place name (e.g., India Gate, Airport, Red Fort)">
+                                        <button class="location-btn" id="search-places" title="Search places">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                    <button class="plan-route-btn" id="plan-route-btn">
+                                        <i class="fas fa-route"></i>
+                                        Plan Safe Route
+                                    </button>
+                                </div>
+
+                                <!-- Route Preferences -->
+                                <div class="route-preferences">
+                                    <h4><i class="fas fa-sliders-h"></i> Route Preferences</h4>
+                                    <div class="preferences-grid">
+                                        <div class="preference-item">
+                                            <label class="preference-toggle">
+                                                <input type="checkbox" id="avoid-danger-zones" checked>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                            <div class="preference-info">
+                                                <span class="preference-label">Avoid Danger Zones</span>
+                                                <small>Skip areas with high crime rates</small>
+                                            </div>
+                                        </div>
+                                        <div class="preference-item">
+                                            <label class="preference-toggle">
+                                                <input type="checkbox" id="prefer-well-lit" checked>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                            <div class="preference-info">
+                                                <span class="preference-label">Well-lit Streets</span>
+                                                <small>Prioritize well-illuminated paths</small>
+                                            </div>
+                                        </div>
+                                        <div class="preference-item">
+                                            <label class="preference-toggle">
+                                                <input type="checkbox" id="prefer-crowded">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                            <div class="preference-info">
+                                                <span class="preference-label">Crowded Areas</span>
+                                                <small>Choose busier, safer streets</small>
+                                            </div>
+                                        </div>
+                                        <div class="preference-item">
+                                            <label class="preference-toggle">
+                                                <input type="checkbox" id="police-presence">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                            <div class="preference-info">
+                                                <span class="preference-label">Police Presence</span>
+                                                <small>Routes near police stations</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="time-preference">
+                                        <label for="travel-time">Travel Time:</label>
+                                        <select id="travel-time">
+                                            <option value="now">Now</option>
+                                            <option value="custom">Custom Time</option>
+                                        </select>
+                                        <input type="datetime-local" id="custom-time" style="display: none;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Route Results -->
+                            <div class="route-results-container">
+                                <div class="route-options" id="route-options">
+                                    <!-- Route options will be populated here -->
+                                </div>
+                                
+                                <!-- Route Map Preview -->
+                                <div class="route-map-preview" id="route-map-preview" style="display: none;">
+                                    <div class="map-header">
+                                        <h4><i class="fas fa-map"></i> Route Preview</h4>
+                                        <div class="map-controls">
+                                            <button class="map-control-btn" id="toggle-traffic">
+                                                <i class="fas fa-car"></i> Traffic
+                                            </button>
+                                            <button class="map-control-btn" id="toggle-safety-overlay">
+                                                <i class="fas fa-shield-alt"></i> Safety
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="mock-route-map">
+                                        <div class="route-path"></div>
+                                        <div class="route-markers">
+                                            <div class="route-marker start">
+                                                <i class="fas fa-play"></i>
+                                            </div>
+                                            <div class="route-marker end">
+                                                <i class="fas fa-flag-checkered"></i>
+                                            </div>
+                                        </div>
+                                        <div class="safety-indicators">
+                                            <div class="safety-zone safe"></div>
+                                            <div class="safety-zone warning"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Saved Routes -->
+                        <div class="saved-routes-section">
+                            <div class="section-header">
+                                <h4><i class="fas fa-bookmark"></i> Saved Routes</h4>
+                                <button class="btn-secondary" id="manage-saved-routes">
+                                    <i class="fas fa-cog"></i> Manage
+                                </button>
+                            </div>
+                            <div class="saved-routes-grid" id="saved-routes-grid">
+                                <div class="saved-route-card">
+                                    <div class="route-card-header">
+                                        <h5>Home to Office</h5>
+                                        <div class="route-actions">
+                                            <button class="action-btn" title="Use this route">
+                                                <i class="fas fa-play"></i>
+                                            </button>
+                                            <button class="action-btn" title="Edit route">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="route-card-info">
+                                        <span class="route-time">
+                                            <i class="fas fa-clock"></i> 15 min
+                                        </span>
+                                        <span class="route-safety">
+                                            <i class="fas fa-shield-check"></i> Very Safe
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="saved-route-card">
+                                    <div class="route-card-header">
+                                        <h5>Hotel to Airport</h5>
+                                        <div class="route-actions">
+                                            <button class="action-btn" title="Use this route">
+                                                <i class="fas fa-play"></i>
+                                            </button>
+                                            <button class="action-btn" title="Edit route">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="route-card-info">
+                                        <span class="route-time">
+                                            <i class="fas fa-clock"></i> 45 min
+                                        </span>
+                                        <span class="route-safety">
+                                            <i class="fas fa-shield-check"></i> Safe
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Route History -->
+                        <div class="route-history-section">
+                            <div class="section-header">
+                                <h4><i class="fas fa-history"></i> Recent Routes</h4>
+                                <button class="btn-secondary" id="clear-history">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                            </div>
+                            <div class="route-history-list" id="route-history-list">
+                                <div class="history-item">
+                                    <div class="history-info">
+                                        <span class="history-route">Connaught Place → India Gate</span>
+                                        <span class="history-time">2 hours ago</span>
+                                    </div>
+                                    <div class="history-actions">
+                                        <button class="action-btn" title="Use again">
+                                            <i class="fas fa-redo"></i>
+                                        </button>
+                                        <button class="action-btn" title="Save route">
+                                            <i class="fas fa-bookmark"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="history-item">
+                                    <div class="history-info">
+                                        <span class="history-route">Hotel → Red Fort</span>
+                                        <span class="history-time">Yesterday</span>
+                                    </div>
+                                    <div class="history-actions">
+                                        <button class="action-btn" title="Use again">
+                                            <i class="fas fa-redo"></i>
+                                        </button>
+                                        <button class="action-btn" title="Save route">
+                                            <i class="fas fa-bookmark"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="community-section" class="dashboard-section">
+                        <h3>Safety Community</h3>
+                        <div class="community-dashboard">
+                            <!-- Simple Tab Navigation -->
+                            <div class="community-tabs">
+                                <button class="community-tab active" data-tab="feed">
+                                    <i class="fas fa-home"></i>
+                                    <span>Feed</span>
+                                </button>
+                                <button class="community-tab" data-tab="write">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Write Review</span>
+                                </button>
+                                <button class="community-tab" data-tab="browse">
+                                    <i class="fas fa-search"></i>
+                                    <span>Browse Reviews</span>
+                                </button>
+                            </div>
+
+                            <!-- Feed Tab -->
+                            <div id="feed-tab" class="tab-content active">
+                                <div class="community-feed">
+                                    <div class="feed-header">
+                                        <h4>Recent Safety Posts</h4>
+                                        <button class="btn-primary" onclick="switchTab('write')">
+                                            <i class="fas fa-plus"></i> New Post
+                                        </button>
+                                    </div>
+                                    <div class="posts-container" id="posts-container">
+                                        <!-- Posts will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Write Review Tab -->
+                            <div id="write-tab" class="tab-content">
+                                <div class="write-post">
+                                    <h4>Share Your Safety Experience</h4>
+                                    <form id="post-form" class="post-form">
+                                        <div class="form-row">
+                                            <input type="text" id="post-title" placeholder="Title: e.g., 'Safe area near Central Park Metro'" required>
+                                        </div>
+                                        
+                                        <div class="form-row">
+                                            <input type="text" id="post-location" placeholder="Location: e.g., 'Connaught Place, New Delhi'">
+                                            <button type="button" id="get-location" class="location-btn">
+                                                <i class="fas fa-crosshairs"></i>
+                                            </button>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <select id="post-category">
+                                                <option value="">Select Category</option>
+                                                <option value="safe">✅ Safe Area</option>
+                                                <option value="warning">⚠️ Safety Warning</option>
+                                                <option value="tip">💡 Safety Tip</option>
+                                                <option value="emergency">🚨 Emergency Report</option>
+                                                <option value="transport">🚌 Transport Safety</option>
+                                                <option value="nightlife">🌙 Nighttime Safety</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <div class="rating-section">
+                                                <label>Safety Rating:</label>
+                                                <div class="star-rating" id="star-rating">
+                                                    <span class="star" data-rating="1">★</span>
+                                                    <span class="star" data-rating="2">★</span>
+                                                    <span class="star" data-rating="3">★</span>
+                                                    <span class="star" data-rating="4">★</span>
+                                                    <span class="star" data-rating="5">★</span>
+                                                </div>
+                                                <span class="rating-text" id="rating-text">Click to rate</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <textarea id="post-content" placeholder="Share your experience... What makes this place safe or unsafe? Any tips for fellow travelers?" rows="4" required></textarea>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <div class="post-options">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" id="anonymous-post">
+                                                    <span>Post anonymously</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-actions">
+                                            <button type="submit" class="btn-primary">
+                                                <i class="fas fa-paper-plane"></i> Post Review
+                                            </button>
+                                            <button type="button" class="btn-secondary" onclick="clearForm()">
+                                                <i class="fas fa-times"></i> Clear
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Browse Reviews Tab -->
+                            <div id="browse-tab" class="tab-content">
+                                <div class="browse-reviews">
+                                    <div class="browse-header">
+                                        <h4>Browse Safety Reviews</h4>
+                                        <div class="browse-filters">
+                                            <select id="filter-category">
+                                                <option value="">All Categories</option>
+                                                <option value="safe">Safe Areas</option>
+                                                <option value="warning">Warnings</option>
+                                                <option value="tip">Tips</option>
+                                                <option value="emergency">Emergency Reports</option>
+                                            </select>
+                                            <select id="filter-rating">
+                                                <option value="">All Ratings</option>
+                                                <option value="5">5 Stars</option>
+                                                <option value="4">4+ Stars</option>
+                                                <option value="3">3+ Stars</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="reviews-list" id="reviews-list">
+                                        <!-- Reviews will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="settings-section" class="dashboard-section">
+                        <h3>Account Settings</h3>
+                        <div class="settings-panel">
+                            <div class="setting-group">
+                                <h4>Privacy Settings</h4>
+                                <div class="setting-item">
+                                    <label>Share location with emergency contacts</label>
+                                    <input type="checkbox" checked>
+                                </div>
+                                <div class="setting-item">
+                                    <label>Allow community safety updates</label>
+                                    <input type="checkbox" checked>
+                                </div>
+                            </div>
+                            <div class="setting-group">
+                                <h4>Notification Preferences</h4>
+                                <div class="setting-item">
+                                    <label>Safety zone alerts</label>
+                                    <input type="checkbox" checked>
+                                </div>
+                                <div class="setting-item">
+                                    <label>Community updates</label>
+                                    <input type="checkbox" checked>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
